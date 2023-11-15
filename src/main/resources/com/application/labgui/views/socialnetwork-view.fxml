@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.labgui.Controller.SocialNetworkController">
+   <children>
+      <VBox layoutX="222.0" layoutY="69.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <SplitPane dividerPositions="0.7156040268456375" orientation="VERTICAL">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="285.0" prefWidth="597.0">
+                     <children>
+                        <TableView layoutX="84.0" prefHeight="281.3333333333333" prefWidth="597.3333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="columnID" prefWidth="96.33331310749054" text="ID" />
+                            <TableColumn fx:id="columnFirstName"  minWidth="0.0" prefWidth="273.0" text="Prenume" />
+                            <TableColumn fx:id="columnLastName" minWidth="0.0" prefWidth="227.0" text="Nume" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="285.0" prefWidth="597.0">
+                     <children>
+                        <ButtonBar layoutX="65.0" layoutY="35.0" prefHeight="110.0" prefWidth="597.3333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <buttons>
+                            <Button mnemonicParsing="false" text="Add" />
+                              <Button mnemonicParsing="false" text="Update" />
+                              <Button mnemonicParsing="false" text="Delete" />
+                              <Button mnemonicParsing="false" text="Prietenii" />
+                          </buttons>
+                        </ButtonBar>
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
