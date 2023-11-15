@@ -12,7 +12,10 @@ import com.application.labgui.Service.Service;
 import com.application.labgui.Validators.ValidatorStrategies;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.TableRow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -25,9 +28,25 @@ public class SocialNetworkApplication extends Application {
         fxmlLoader.setLocation(getClass().getResource("views/socialnetwork-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 700, 450);
         intialize(fxmlLoader);
+        clearSelectionClickOutside(fxmlLoader, scene);
         stage.setTitle("Social Network");
         stage.setScene(scene);
         stage.show();
+        //TODO: asta de integrat undeva idk unde
+
+    }
+
+    private void clearSelectionClickOutside(FXMLLoader fxmlLoader, Scene scene){
+        SocialNetworkController controller = fxmlLoader.getController();
+        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
+            Node source = evt.getPickResult().getIntersectedNode();
+            while (source != null && !(source instanceof TableRow)) {
+                source = source.getParent();
+            }
+            if (source == null || (source instanceof TableRow && ((TableRow) source).isEmpty())) {
+                controller.clearSelectionMainTable();
+            }
+        });
     }
 
 
@@ -40,6 +59,7 @@ public class SocialNetworkApplication extends Application {
         Service serviceApp = new Service(userDBRepository, prietenieDBRepository, validatorStrategies, validatorPrietenieStrategie);
         SocialNetworkController socialNetworkController = fxmlLoader.getController();
         socialNetworkController.setServiceSocialNetwork(serviceApp);
+
     }
     public static void main(String[] args) {
         launch();

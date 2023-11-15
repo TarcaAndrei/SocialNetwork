@@ -8,6 +8,7 @@ import com.application.labgui.Domain.Tuplu;
 import com.application.labgui.Domain.Utilizator;
 import com.application.labgui.Repository.Repository;
 import com.application.labgui.Utils.DFS;
+import com.application.labgui.Utils.Events.ChangeEventType;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
 import com.application.labgui.Utils.Observer.Observable;
 import com.application.labgui.Utils.Observer.Observer;
@@ -115,7 +116,7 @@ public class Service implements Observable<ServiceChangeEvent> {
             x.deleteFriend(u1);
             repositoryUtilizatori.update(x);
         });
-
+        this.notifyAllObservers(new ServiceChangeEvent());
     }
 
     /**

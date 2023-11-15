@@ -11,4 +11,7 @@ module com.application.labgui {
 
     opens com.application.labgui.Controller to javafx.fxml;
     exports com.application.labgui.Controller;
+
+    opens com.application.labgui.Domain to java.base;
+    exports com.application.labgui.Domain;
 }
