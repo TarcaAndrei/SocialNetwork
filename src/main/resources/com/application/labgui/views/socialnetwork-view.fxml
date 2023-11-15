@@ -11,13 +11,23 @@
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="285.0" prefWidth="597.0">
                      <children>
-                        <TableView fx:id="utilizatorTableView" layoutX="84.0" prefHeight="281.3333333333333" prefWidth="597.3333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <columns>
-                            <TableColumn fx:id="columnID" prefWidth="96.33331310749054" text="ID" />
-                            <TableColumn fx:id="columnFirstName" minWidth="0.0" prefWidth="273.0" text="Prenume" />
-                            <TableColumn fx:id="columnLastName" minWidth="0.0" prefWidth="227.0" text="Nume" />
-                          </columns>
-                        </TableView>
+                        <HBox prefHeight="300.0" prefWidth="600.0">
+                           <children>
+                              <TableView fx:id="utilizatorTableView" prefHeight="281.3333333333333" prefWidth="597.3333333333334">
+                                <columns>
+                                  <TableColumn fx:id="columnID" prefWidth="46.66668701171875" text="ID" />
+                                  <TableColumn fx:id="columnFirstName" minWidth="0.0" prefWidth="123.33331680297852" text="Prenume" />
+                                  <TableColumn fx:id="columnLastName" minWidth="0.0" prefWidth="134.6666717529297" text="Nume" />
+                                </columns>
+                              </TableView>
+                              <TableView fx:id="prieteniTableView" prefHeight="281.3333333333333" prefWidth="597.3333333333334">
+                                  <columns>
+                                      <TableColumn fx:id="columnID1" prefWidth="55.666656613349915" text="ID" />
+                                      <TableColumn fx:id="columnFirstName1" minWidth="0.0" prefWidth="128.0" text="Prenume" />
+                                      <TableColumn fx:id="columnLastName1" minWidth="0.0" prefWidth="93.33331298828125" text="Nume" />
+                                  </columns>
+                              </TableView>
+                           </children></HBox>
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="285.0" prefWidth="597.0">
@@ -27,13 +37,7 @@
                             <Button mnemonicParsing="false" text="Add" />
                               <Button mnemonicParsing="false" text="Update" />
                               <Button mnemonicParsing="false" onAction="#handleDeleteUtilizator" text="Delete" />
-                              <Button mnemonicParsing="false" onAction="#handleAddUtilizator" text="Prietenii" />
-                              <TableView fx:id="altTable" prefHeight="200.0" prefWidth="200.0">
-                                <columns>
-                                  <TableColumn  prefWidth="75.0" text="C1" />
-                                  <TableColumn prefWidth="75.0" text="C2" />
-                                </columns>
-                              </TableView>
+                              <Button mnemonicParsing="false" text="Prietenii" />
                           </buttons>
                         </ButtonBar>
                      </children>

@@ -269,14 +269,13 @@ public class Service implements Observable<ServiceChangeEvent> {
         return dfs.mainAlgorithm();
     }
 
-    private List<Utilizator> relatiiDePrietenie(Long idUser){
+    public List<Utilizator> relatiiDePrietenie(Long idUser){
         List<Utilizator> listaPrieteni = new ArrayList<>();
         var optionalUtilizator = findOne(idUser);
         if(optionalUtilizator.isEmpty()){
             return listaPrieteni;
         }
-        var lista_user = optionalUtilizator.get().getFriends();
-        return lista_user;
+        return optionalUtilizator.get().getFriends();
     }
 
     public List<PrietenieDTO> relatiiDePrietenieLuna(Long idUser, Integer luna){

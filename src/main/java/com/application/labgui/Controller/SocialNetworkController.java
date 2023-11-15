@@ -22,11 +22,10 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     private Service serviceSocialNetwork;
 
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
-    @FXML
-    TableView<Utilizator> altTable;
+    ObservableList<Utilizator> modelPrieteni = FXCollections.observableArrayList();
 
     @FXML
-    public TableView<Utilizator> utilizatorTableView;
+    TableView<Utilizator> utilizatorTableView;
     @FXML
     TableColumn<Utilizator, Long> columnID;
     @FXML
@@ -35,22 +34,37 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     TableColumn<Utilizator, String> columnLastName;
 
 
+    @FXML
+    TableView<Utilizator> prieteniTableView;
+    @FXML
+    TableColumn<Utilizator, Long> columnID1;
+    @FXML
+    TableColumn<Utilizator, String> columnFirstName1;
+    @FXML
+    TableColumn<Utilizator, String> columnLastName1;
+
     @Override
     public void update(ServiceChangeEvent eventUpdate) {
         initModel();
     }
 
     public void initialize() {
+        prieteniTableView.setVisible(false);
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
         columnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        columnID1.setCellValueFactory(new PropertyValueFactory<>("id"));
+        columnFirstName1.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
+        columnLastName1.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         utilizatorTableView.setItems(model);
+        prieteniTableView.setItems(modelPrieteni);
         utilizatorTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
             var utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
             if(utilizator == null)
-                altTable.setVisible(false);
+                prieteniTableView.setVisible(false);
             else {
-                altTable.setVisible(true);
+                prieteniTableView.setVisible(true);
+                reloadFriendsModel(utilizator.getId());
             }
         }));
     }
@@ -70,15 +84,10 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         }
     }
 
-    public void handleAddUtilizator(ActionEvent actionEvent) {
-        if(altTable.isVisible()){
-            altTable.setVisible(false);
-        }
-        else {
-            altTable.setVisible(true);
-        }
-        System.out.println(altTable.visibleProperty());
-        System.out.println("ceva");
+    private void reloadFriendsModel(Long idUser){
+        Iterable<Utilizator> listaUsers = serviceSocialNetwork.relatiiDePrietenie(idUser);
+        List<Utilizator> utilizatorList = StreamSupport.stream(listaUsers.spliterator(), false).toList();
+        modelPrieteni.setAll(utilizatorList);
     }
 
     private void initModel(){
