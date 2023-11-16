@@ -17,14 +17,14 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="ID Utilizator"  GridPane.halignment="CENTER" />
+            <Label text="ID Utilizator" GridPane.halignment="CENTER" />
             <Label text="Prenume Utilizator" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Label text="Nume Utilizator" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <TextField fx:id="idTextField" GridPane.columnIndex="1" />
             <TextField fx:id="prenumeTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="numeTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" fx:id="saveButton" onAction="#handlerSave" text="Save" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-            <Button mnemonicParsing="false" fx:id="cancelButton"  onAction="#handlerCancel" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handlerSave" text="Save" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handlerCancel" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
          </children>
       </GridPane>
    </children>

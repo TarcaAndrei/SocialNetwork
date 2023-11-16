@@ -38,9 +38,9 @@ public class EditUtilizatorController {
             this.saveButton.setText("Update");
         }
         else{
-            this.idTextField.setPromptText("Will be generated");
-            this.prenumeTextField.setPromptText("PRENUME");
-            this.numeTextField.setPromptText("NUME");
+            this.idTextField.setText("Will be generated");
+            this.prenumeTextField.setPromptText("INTRODU PRENUME");
+            this.numeTextField.setPromptText("INTRODU NUME");
         }
     }
 
@@ -66,9 +66,12 @@ public class EditUtilizatorController {
                 MessageAlert.showMessage(dialogStage, Alert.AlertType.ERROR, "EROARE", e.getMessage());
             }
         }
+        //altfel inseamna ca e vorba de un update
         else{
             try{
-//                this.service.update
+                this.service.updateUser(utilizator.getId(), nume, prenume);
+                MessageAlert.showMessage(dialogStage, Alert.AlertType.CONFIRMATION, "", "A mers!");
+                dialogStage.close();
             }catch (AppException e) {
                 MessageAlert.showMessage(dialogStage, Alert.AlertType.ERROR, "EROARE", e.getMessage());
             }

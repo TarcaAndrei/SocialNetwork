@@ -4,6 +4,7 @@ import com.application.labgui.Controller.SocialNetworkController;
 import com.application.labgui.Domain.Prietenie;
 import com.application.labgui.Domain.Tuplu;
 import com.application.labgui.Domain.Utilizator;
+import com.application.labgui.Presentation.Consola;
 import com.application.labgui.Repository.DBConnection;
 import com.application.labgui.Repository.PrietenieDBRepository;
 import com.application.labgui.Repository.Repository;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.io.Console;
 import java.io.IOException;
 
 public class SocialNetworkApplication extends Application {
@@ -59,7 +61,8 @@ public class SocialNetworkApplication extends Application {
         Service serviceApp = new Service(userDBRepository, prietenieDBRepository, validatorStrategies, validatorPrietenieStrategie);
         SocialNetworkController socialNetworkController = fxmlLoader.getController();
         socialNetworkController.setServiceSocialNetwork(serviceApp);
-
+        Consola consola = new Consola(serviceApp);
+        consola.run();
     }
     public static void main(String[] args) {
         launch();

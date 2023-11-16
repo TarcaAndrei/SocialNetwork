@@ -22,9 +22,10 @@
                                </TableView>
                               <TableView fx:id="prieteniTableView">
                                   <columns>
-                                      <TableColumn fx:id="columnID1" prefWidth="55.666656613349915" text="ID" />
-                                      <TableColumn fx:id="columnFirstName1" minWidth="0.0" prefWidth="128.0" text="Prenume" />
-                                      <TableColumn fx:id="columnLastName1" minWidth="0.0" prefWidth="93.33331298828125" text="Nume" />
+                                      <TableColumn fx:id="columnID1" prefWidth="27.000003218650818" text="ID" />
+                                      <TableColumn fx:id="columnFirstName1" minWidth="0.0" prefWidth="90.9999942779541" text="Prenume" />
+                                      <TableColumn fx:id="columnLastName1" minWidth="0.0" prefWidth="77.0" text="Nume" />
+                                    <TableColumn fx:id="columnFriendsFrom" prefWidth="94.99996948242188" text="FriendsFrom" />
                                   </columns>
                               </TableView>
                            </children></HBox>

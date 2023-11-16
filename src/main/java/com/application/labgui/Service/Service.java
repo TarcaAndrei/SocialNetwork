@@ -147,6 +147,17 @@ public class Service implements Observable<ServiceChangeEvent> {
         this.notifyAllObservers(new ServiceChangeEvent());
     }
 
+    public void updateUser(Long idUtilizator, String numeNou, String prenumeNou){
+        var utilizatorNou = new Utilizator(prenumeNou, numeNou);
+        utilizatorNou.setId(idUtilizator);
+        validatorUtilizator.validate(utilizatorNou);
+        var response = repositoryUtilizatori.update(utilizatorNou);
+        if(response.isPresent()){
+            throw new ServiceException("Utilizator existent!");
+        }
+        this.notifyAllObservers(new ServiceChangeEvent());
+    }
+
     /**
      * getter pentru toate relatiile de prietenie
      * @return toate relatiile de prietenie

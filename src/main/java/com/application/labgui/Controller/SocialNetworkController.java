@@ -1,6 +1,7 @@
 package com.application.labgui.Controller;
 
 import com.application.labgui.AppExceptions.AppException;
+import com.application.labgui.Domain.Prietenie;
 import com.application.labgui.Domain.Utilizator;
 import com.application.labgui.Service.Service;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
@@ -22,6 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -49,6 +51,8 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     TableColumn<Utilizator, String> columnFirstName1;
     @FXML
     TableColumn<Utilizator, String> columnLastName1;
+    @FXML
+    TableColumn<Prietenie, LocalDateTime> columnFriendsFrom;
 
     @FXML
     HBox hBoxTables;
@@ -66,6 +70,7 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         columnID1.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnFirstName1.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
         columnLastName1.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        columnFriendsFrom.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
         utilizatorTableView.setItems(model);
         prieteniTableView.setItems(modelPrieteni);
         utilizatorTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
