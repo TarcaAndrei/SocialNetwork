@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class PrietenieDTO {
+    private Long id1;
+    private Long id2;
     public String getNume() {
         return nume;
     }
@@ -41,5 +43,21 @@ public class PrietenieDTO {
     @Override
     public String toString() {
         return nume + " " + " " + prenume + " " + friendsFrom.format(DateTimeFormatter.ISO_DATE);
+    }
+
+    public Long getId1() {
+        return id1;
+    }
+
+    public void setId1(Long id1) {
+        this.id1 = id1;
+    }
+
+    public Long getId2() {
+        return id2;
+    }
+
+    public void setId2(Long id2) {
+        this.id2 = id2;
     }
 }

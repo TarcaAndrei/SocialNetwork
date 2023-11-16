@@ -30,7 +30,7 @@ public class SocialNetworkApplication extends Application {
         fxmlLoader.setLocation(getClass().getResource("views/socialnetwork-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 700, 450);
         intialize(fxmlLoader);
-        clearSelectionClickOutside(fxmlLoader, scene);
+//        clearSelectionClickOutside(fxmlLoader, scene);
         stage.setTitle("Social Network");
         stage.setScene(scene);
         stage.show();
@@ -61,8 +61,8 @@ public class SocialNetworkApplication extends Application {
         Service serviceApp = new Service(userDBRepository, prietenieDBRepository, validatorStrategies, validatorPrietenieStrategie);
         SocialNetworkController socialNetworkController = fxmlLoader.getController();
         socialNetworkController.setServiceSocialNetwork(serviceApp);
-        Consola consola = new Consola(serviceApp);
-        consola.run();
+//        Consola consola = new Consola(serviceApp);
+//        consola.run();
     }
     public static void main(String[] args) {
         launch();

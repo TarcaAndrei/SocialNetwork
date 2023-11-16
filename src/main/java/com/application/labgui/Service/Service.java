@@ -282,24 +282,27 @@ public class Service implements Observable<ServiceChangeEvent> {
         return dfs.mainAlgorithm();
     }
 
-    public List<Utilizator> relatiiDePrietenie(Long idUser){
-        List<Utilizator> listaPrieteni = new ArrayList<>();
+    public List<PrietenieDTO> relatiiDePrietenie(Long idUser){
+        List<PrietenieDTO> listaPrieteni = new ArrayList<>();
         var optionalUtilizator = findOne(idUser);
         if(optionalUtilizator.isEmpty()){
             return listaPrieteni;
         }
-        return optionalUtilizator.get().getFriends();
+        var listaInitiala = optionalUtilizator.get().getFriends();
+        listaInitiala.forEach(x->{
+            var relatie = repositoryPrietenii.findOne(new Tuplu<>(idUser, x.getId())).get();
+            var prietenieDTIO = new PrietenieDTO(x.getLastName(), x.getFirstName(), relatie.getDateCreated());
+            prietenieDTIO.setId1(idUser);
+            prietenieDTIO.setId2(x.getId());
+            listaPrieteni.add(prietenieDTIO);
+        });
+        return listaPrieteni;
     }
 
     public List<PrietenieDTO> relatiiDePrietenieLuna(Long idUser, Integer luna){
         Predicate<PrietenieDTO> prietenieDinLuna = prietenieDTO -> prietenieDTO.getFriendsFrom().getMonth().equals(Month.of(luna));
-        List<PrietenieDTO> listaPrieteniDTO = new ArrayList<>();
         var listaPrieteni = relatiiDePrietenie(idUser);
-        listaPrieteni.forEach(x->{
-            var relatie = repositoryPrietenii.findOne(new Tuplu<>(idUser, x.getId())).get();
-            listaPrieteniDTO.add(new PrietenieDTO(x.getLastName(), x.getFirstName(), relatie.getDateCreated()));
-        });
-        return listaPrieteniDTO.stream()
+        return listaPrieteni.stream()
                 .filter(prietenieDinLuna)
                 .collect(Collectors.toList());
 

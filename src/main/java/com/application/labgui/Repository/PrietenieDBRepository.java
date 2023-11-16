@@ -63,6 +63,26 @@ public class PrietenieDBRepository implements Repository<Tuplu<Long, Long>, Prie
         return entities.values();
     }
 
+    public Iterable<Prietenie> findPrieteniiUser(Long idUser){
+        HashMap<Tuplu<Long, Long>, Prietenie> entities = new HashMap<>();
+        try (Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD)) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM prietenii WHERE iduser1 = ? OR iduser2 = ?");
+            statement.setLong(1, idUser);
+            statement.setLong(2, idUser);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Long idUser1 = resultSet.getLong("iduser1");
+                Long idUser2 = resultSet.getLong("iduser2");
+                LocalDateTime friendsFrom = resultSet.getTimestamp("friendsFrom").toLocalDateTime();
+                Prietenie prietenie = new Prietenie(idUser1, idUser2, friendsFrom);
+                entities.put(prietenie.getId(), prietenie);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return entities.values();
+    }
+
     @Override
     public Optional<Prietenie> save(Prietenie entity) {
         prietenieValidator.validate(entity);
@@ -102,6 +122,7 @@ public class PrietenieDBRepository implements Repository<Tuplu<Long, Long>, Prie
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public Optional<Prietenie> update(Prietenie entity) {

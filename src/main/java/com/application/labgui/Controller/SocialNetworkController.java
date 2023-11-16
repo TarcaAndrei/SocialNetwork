@@ -2,6 +2,8 @@ package com.application.labgui.Controller;
 
 import com.application.labgui.AppExceptions.AppException;
 import com.application.labgui.Domain.Prietenie;
+import com.application.labgui.Domain.PrietenieDTO;
+import com.application.labgui.Domain.Tuplu;
 import com.application.labgui.Domain.Utilizator;
 import com.application.labgui.Service.Service;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
@@ -13,10 +15,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -31,7 +33,7 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     private Service serviceSocialNetwork;
 
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
-    ObservableList<Utilizator> modelPrieteni = FXCollections.observableArrayList();
+    ObservableList<PrietenieDTO> modelPrieteni = FXCollections.observableArrayList();
 
     @FXML
     TableView<Utilizator> utilizatorTableView;
@@ -44,18 +46,21 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
 
 
     @FXML
-    TableView<Utilizator> prieteniTableView;
+    TableView<PrietenieDTO> prieteniTableView;
     @FXML
-    TableColumn<Utilizator, Long> columnID1;
+    TableColumn<PrietenieDTO, Long> columnID1;
     @FXML
-    TableColumn<Utilizator, String> columnFirstName1;
+    TableColumn<PrietenieDTO, String> columnFirstName1;
     @FXML
-    TableColumn<Utilizator, String> columnLastName1;
+    TableColumn<PrietenieDTO, String> columnLastName1;
     @FXML
-    TableColumn<Prietenie, LocalDateTime> columnFriendsFrom;
+    TableColumn<PrietenieDTO, LocalDateTime> columnFriendsFrom;
 
     @FXML
     HBox hBoxTables;
+
+    @FXML
+    Button buttonDeletePrietenie;
 
     @Override
     public void update(ServiceChangeEvent eventUpdate) {
@@ -64,13 +69,14 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
 
     public void initialize() {
         prieteniTableView.setVisible(false);
+        buttonDeletePrietenie.setVisible(false);
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
         columnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        columnID1.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnFirstName1.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
-        columnLastName1.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        columnFriendsFrom.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
+        columnID1.setCellValueFactory(new PropertyValueFactory<>("id2"));
+        columnFirstName1.setCellValueFactory(new PropertyValueFactory<>("prenume"));//numele din domeniu al atributului
+        columnLastName1.setCellValueFactory(new PropertyValueFactory<>("nume"));
+        columnFriendsFrom.setCellValueFactory(new PropertyValueFactory<>("friendsFrom"));
         utilizatorTableView.setItems(model);
         prieteniTableView.setItems(modelPrieteni);
         utilizatorTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
@@ -90,6 +96,14 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
 //                reloadColumns();
                 reloadFriendsModel(utilizator.getId());
             }
+        }));
+        prieteniTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
+            var prietenie = prieteniTableView.getSelectionModel().getSelectedItem();
+            if(prietenie == null){
+                buttonDeletePrietenie.setVisible(false);
+                return;
+            }
+            buttonDeletePrietenie.setVisible(true);
         }));
     }
 
@@ -146,9 +160,9 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     }
 
     private void reloadFriendsModel(Long idUser){
-        Iterable<Utilizator> listaUsers = serviceSocialNetwork.relatiiDePrietenie(idUser);
-        List<Utilizator> utilizatorList = StreamSupport.stream(listaUsers.spliterator(), false).toList();
-        modelPrieteni.setAll(utilizatorList);
+        Iterable<PrietenieDTO> listaPrieteni = serviceSocialNetwork.relatiiDePrietenie(idUser);
+        List<PrietenieDTO> listaDTO = StreamSupport.stream(listaPrieteni.spliterator(), false).toList();
+        modelPrieteni.setAll(listaDTO);
     }
 
     private void initModel(){
@@ -171,6 +185,20 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         columnID.setPrefWidth(utilizatorTableView.getWidth()/5);
         columnLastName.setPrefWidth(2* utilizatorTableView.getWidth()/5);
         columnFirstName.setPrefWidth(2 * utilizatorTableView.getWidth()/5);
+    }
+
+    public void handleDeletePrietenie(ActionEvent actionEvent) {
+        PrietenieDTO prietenieDTO = prieteniTableView.getSelectionModel().getSelectedItem();
+        if(prietenieDTO==null){
+            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", "Nu ai selectat niciun student");
+            return;
+        }
+        try{
+            serviceSocialNetwork.deletePrietenie(new Tuplu<>(prietenieDTO.getId1(), prietenieDTO.getId2()));
+        }
+        catch (AppException e){
+            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", e.getMessage());
+        }
     }
 
     //TODO Trebe sa fac link intre asta si noua fereastra care o sa se deschida
