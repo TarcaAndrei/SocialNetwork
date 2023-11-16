@@ -9,6 +9,7 @@ import com.application.labgui.Domain.Utilizator;
 import com.application.labgui.Repository.Repository;
 import com.application.labgui.Utils.DFS;
 import com.application.labgui.Utils.Events.ChangeEventType;
+import com.application.labgui.Utils.Events.Event;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
 import com.application.labgui.Utils.Observer.Observable;
 import com.application.labgui.Utils.Observer.Observer;
@@ -30,26 +31,26 @@ public class Service implements Observable<ServiceChangeEvent> {
     private Validator validatorUtilizator;
     private Validator validatorPrietenie;
 
-//    private long idUtilizatorNou;
-//
-//    /**
-//     * functia care genereaza id-uri unice incepand cu 1
-//     */
-//    private void loadIdGenerator(){
-//        idUtilizatorNou = 0;
-//        repositoryUtilizatori.findAll().forEach( x->{
-//            idUtilizatorNou = Math.max(idUtilizatorNou, x.getId());
-//        });
-//    }
+    private long idUtilizatorNou;
+
+    /**
+     * functia care genereaza id-uri unice incepand cu 1
+     */
+    private void loadIdGenerator(){
+        idUtilizatorNou = 0;
+        repositoryUtilizatori.findAll().forEach( x->{
+            idUtilizatorNou = Math.max(idUtilizatorNou, x.getId());
+        });
+    }
 
     /**
      *
      * @return un id unic
      */
-//    private long getIdUtilizatorNou(){
-//        idUtilizatorNou++;
-//        return idUtilizatorNou;
-//    }
+    private long getIdUtilizatorNou(){
+        idUtilizatorNou++;
+        return idUtilizatorNou;
+    }
 
     /**
      * constructor service
@@ -64,7 +65,7 @@ public class Service implements Observable<ServiceChangeEvent> {
         var factory = FactoryValidator.getFactoryInstance();
         this.validatorUtilizator = factory.createValidator(strategies);
         this.validatorPrietenie = factory.createValidator(strategies1);
-//        loadIdGenerator();
+        loadIdGenerator();
     }
 
     /**
@@ -82,8 +83,7 @@ public class Service implements Observable<ServiceChangeEvent> {
         if(response.isPresent()){
             throw new ServiceException("Utilizator existent!");
         }
-//        Predicate<Optional<Utilizator>> predicate = Optional::isPresent;
-//        pre
+        this.notifyAllObservers(new ServiceChangeEvent());
     }
 
     /**
@@ -144,6 +144,7 @@ public class Service implements Observable<ServiceChangeEvent> {
         u2.addFriend(u1);
         updateUser.accept(u1);
         updateUser.accept(u2);
+        this.notifyAllObservers(new ServiceChangeEvent());
     }
 
     /**
@@ -188,6 +189,7 @@ public class Service implements Observable<ServiceChangeEvent> {
         u2.deleteFriend(u1);
         repositoryUtilizatori.update(u1);
         repositoryUtilizatori.update(u2);
+        this.notifyAllObservers(new ServiceChangeEvent());
     }
 
     /**
