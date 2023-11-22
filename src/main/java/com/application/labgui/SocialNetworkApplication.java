@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 import java.io.Console;
 import java.io.IOException;
 
-public class SocialNetworkApplication extends Application {
+public class SocialNetworkApplication extends Application{
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -67,4 +67,5 @@ public class SocialNetworkApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
+
 }

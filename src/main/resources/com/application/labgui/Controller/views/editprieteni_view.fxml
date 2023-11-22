@@ -20,9 +20,9 @@
             <Label text="ID Utilizator 2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <TextField fx:id="idUtilizator1" editable="false" GridPane.columnIndex="1" />
             <TextField fx:id="idUtilizator2" promptText="ID Viitor Prieten" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" text="Save" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-            <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <ComboBox fx:id="utilizationComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+            <Button fx:id="saveButton" onAction="#handlerSave" alignment="CENTER" mnemonicParsing="false" text="Save" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+            <Button fx:id="cancelButton" onAction="#handlerCancel" mnemonicParsing="false" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="utilizatoriComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
          </children>
       </GridPane>
    </children>

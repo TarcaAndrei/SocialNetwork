@@ -37,15 +37,15 @@
                            <children>
                               <ButtonBar prefHeight="110.0" prefWidth="309.0">
                                 <buttons>
-                                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" text="Add" />
-                                    <Button mnemonicParsing="false" onAction="#handleUpdateUtilizator" text="Update" />
-                                    <Button mnemonicParsing="false" onAction="#handleDeleteUtilizator" text="Delete" />
+                                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" text="Add" style="-fx-background-color: lightblue;" />
+                                    <Button mnemonicParsing="false" onAction="#handleUpdateUtilizator" text="Update" style="-fx-background-color: lightgreen;"/>
+                                    <Button mnemonicParsing="false" onAction="#handleDeleteUtilizator" text="Delete" style="-fx-background-color: lightcoral;"/>
                                 </buttons>
                               </ButtonBar>
                               <ButtonBar prefHeight="110.0" prefWidth="291.0">
                                 <buttons>
-                                    <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="154.0" text="Adauga Prietenie" />
-                                    <Button fx:id="buttonDeletePrietenie" mnemonicParsing="false" onAction="#handleDeletePrietenie" prefHeight="25.0" text="Delete Prietenie" />
+                                    <Button mnemonicParsing="false" prefHeight="25.0" onAction="#handleAddPrietenie" prefWidth="154.0" text="Adauga Prietenie" style="-fx-background-color: lightblue;" />
+                                    <Button fx:id="buttonDeletePrietenie" mnemonicParsing="false" onAction="#handleDeletePrietenie" prefHeight="25.0" text="Delete Prietenie" style="-fx-background-color: lightcoral" />
                                 </buttons>
                               </ButtonBar>
                            </children>

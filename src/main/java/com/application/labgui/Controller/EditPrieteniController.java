@@ -1,15 +1,20 @@
 package com.application.labgui.Controller;
 
 import com.application.labgui.AppExceptions.AppException;
+import com.application.labgui.Domain.PrietenieDTO;
 import com.application.labgui.Domain.Utilizator;
 import com.application.labgui.Service.Service;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
+
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class EditPrieteniController {
 
@@ -22,7 +27,7 @@ public class EditPrieteniController {
     @FXML
     Button cancelButton;
     @FXML
-    ComboBox utilizationComboBox;
+    ComboBox<PrietenieDTO> utilizatoriComboBox;
 
     private Service service;
     private Stage dialogStage;
@@ -33,11 +38,24 @@ public class EditPrieteniController {
         this.dialogStage = dialogStage;
         this.utilizator = utilizator;
         this.idUtilizator1.setEditable(false);
+        utilizatoriComboBox.setVisible(false);
         loadPossibleFriends();
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            if (Pattern.matches("[0-9]*", newText)) {
+                return change;
+            }
+            return null;
+        };
+        TextFormatter<Integer> textFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
+        idUtilizator2.setTextFormatter(textFormatter);
+        idUtilizator2.setText("1");
     }
     private void loadPossibleFriends(){
         this.idUtilizator1.setText(utilizator.getId().toString());
-        var listaNeprieteni = "IDK";
+//        var listaNeprieteni = service.relatiiDePrietenie(utilizator.getId());
+//        var listaLista = StreamSupport.stream(listaNeprieteni.spliterator(), false).toList();
+//        utilizatoriComboBox.getItems().setAll(listaLista);
     }
 
     public void handlerCancel(ActionEvent actionEvent) {
@@ -46,6 +64,13 @@ public class EditPrieteniController {
 
     public void handlerSave(ActionEvent actionEvent) {
         //idk
-        this.dialogStage.close();
+        Long id_utilizator1 = utilizator.getId();
+        Long id_utilizator2 = Long.parseLong(idUtilizator2.getText());
+        try{
+            service.addPrietenie(id_utilizator1, id_utilizator2);
+            this.dialogStage.close();
+        } catch (AppException e) {
+            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", e.getMessage());
+        }
     }
 }

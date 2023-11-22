@@ -132,7 +132,27 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         catch (IOException e){
             System.out.println(e.getMessage());
         }
+    }
 
+    private void showPrieteniAddDialog(Utilizator utilizator) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("views/editprieteni_view.fxml"));
+            //aici la resources trb sa fie cam aceeasi chestie ca in folderul celalalt
+            AnchorPane root = fxmlLoader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Add prietenie");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            EditPrieteniController editPrieteniController = fxmlLoader.getController();
+            editPrieteniController.setService(serviceSocialNetwork, dialogStage, utilizator);
+            dialogStage.show();
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public void handleUpdateUtilizator(ActionEvent actionEvent){
@@ -199,6 +219,15 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         catch (AppException e){
             MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", e.getMessage());
         }
+    }
+
+    public void handleAddPrietenie(ActionEvent actionEvent){
+        var utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
+        if(utilizator==null){
+            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", "Nu ai selectat niciun student");
+            return;
+        }
+        showPrieteniAddDialog(utilizator);
     }
 
     //TODO Trebe sa fac link intre asta si noua fereastra care o sa se deschida
