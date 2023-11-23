@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -26,14 +27,18 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
 public class SocialNetworkController implements Observer<ServiceChangeEvent> {
+    public Button loginUser;
     private Service serviceSocialNetwork;
 
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
     ObservableList<PrietenieDTO> modelPrieteni = FXCollections.observableArrayList();
+
+    HashMap<Long, Node> listaUseriLogati;
 
     @FXML
     TableView<Utilizator> utilizatorTableView;
@@ -45,22 +50,19 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     TableColumn<Utilizator, String> columnLastName;
 
 
-    @FXML
-    TableView<PrietenieDTO> prieteniTableView;
-    @FXML
-    TableColumn<PrietenieDTO, Long> columnID1;
-    @FXML
-    TableColumn<PrietenieDTO, String> columnFirstName1;
-    @FXML
-    TableColumn<PrietenieDTO, String> columnLastName1;
-    @FXML
-    TableColumn<PrietenieDTO, LocalDateTime> columnFriendsFrom;
+//    @FXML
+//    TableView<PrietenieDTO> prieteniTableView;
+//    @FXML
+//    TableColumn<PrietenieDTO, Long> columnID1;
+//    @FXML
+//    TableColumn<PrietenieDTO, String> columnFirstName1;
+//    @FXML
+//    TableColumn<PrietenieDTO, String> columnLastName1;
+//    @FXML
+//    TableColumn<PrietenieDTO, LocalDateTime> columnFriendsFrom;
 
     @FXML
     HBox hBoxTables;
-
-    @FXML
-    Button buttonDeletePrietenie;
 
     @Override
     public void update(ServiceChangeEvent eventUpdate) {
@@ -68,43 +70,44 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     }
 
     public void initialize() {
-        prieteniTableView.setVisible(false);
-        buttonDeletePrietenie.setVisible(false);
+        listaUseriLogati = new HashMap<>();
+//        prieteniTableView.setVisible(false);
+//        buttonDeletePrietenie.setVisible(false);
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
         columnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        columnID1.setCellValueFactory(new PropertyValueFactory<>("id2"));
-        columnFirstName1.setCellValueFactory(new PropertyValueFactory<>("prenume"));//numele din domeniu al atributului
-        columnLastName1.setCellValueFactory(new PropertyValueFactory<>("nume"));
-        columnFriendsFrom.setCellValueFactory(new PropertyValueFactory<>("friendsFrom"));
+//        columnID1.setCellValueFactory(new PropertyValueFactory<>("id2"));
+//        columnFirstName1.setCellValueFactory(new PropertyValueFactory<>("prenume"));//numele din domeniu al atributului
+//        columnLastName1.setCellValueFactory(new PropertyValueFactory<>("nume"));
+//        columnFriendsFrom.setCellValueFactory(new PropertyValueFactory<>("friendsFrom"));
         utilizatorTableView.setItems(model);
-        prieteniTableView.setItems(modelPrieteni);
+//        prieteniTableView.setItems(modelPrieteni);
         utilizatorTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
             var utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
             if(utilizator == null) {
-                prieteniTableView.setVisible(false);
+//                prieteniTableView.setVisible(false);
                 utilizatorTableView.setPrefHeight(hBoxTables.getHeight());
                 utilizatorTableView.setPrefWidth(hBoxTables.getWidth());
 //                reloadColumns();
             }
             else {
-                prieteniTableView.setVisible(true);
+//                prieteniTableView.setVisible(true);
                 utilizatorTableView.setPrefHeight(hBoxTables.getHeight()/2);
                 utilizatorTableView.setPrefWidth(hBoxTables.getWidth()/2);
-                prieteniTableView.setPrefHeight(hBoxTables.getHeight()/2);
-                prieteniTableView.setPrefWidth(hBoxTables.getWidth()/2);
+//                prieteniTableView.setPrefHeight(hBoxTables.getHeight()/2);
+//                prieteniTableView.setPrefWidth(hBoxTables.getWidth()/2);
 //                reloadColumns();
                 reloadFriendsModel(utilizator.getId());
             }
         }));
-        prieteniTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
-            var prietenie = prieteniTableView.getSelectionModel().getSelectedItem();
-            if(prietenie == null){
-                buttonDeletePrietenie.setVisible(false);
-                return;
-            }
-            buttonDeletePrietenie.setVisible(true);
-        }));
+//        prieteniTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
+//            var prietenie = prieteniTableView.getSelectionModel().getSelectedItem();
+//            if(prietenie == null){
+//                buttonDeletePrietenie.setVisible(false);
+//                return;
+//            }
+//            buttonDeletePrietenie.setVisible(true);
+//        }));
     }
 
     public void handleAddUtilizator(ActionEvent actionEvent){
@@ -208,7 +211,8 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     }
 
     public void handleDeletePrietenie(ActionEvent actionEvent) {
-        PrietenieDTO prietenieDTO = prieteniTableView.getSelectionModel().getSelectedItem();
+//        PrietenieDTO prietenieDTO = prieteniTableView.getSelectionModel().getSelectedItem();
+        PrietenieDTO prietenieDTO = null;
         if(prietenieDTO==null){
             MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", "Nu ai selectat niciun student");
             return;
@@ -228,6 +232,35 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
             return;
         }
         showPrieteniAddDialog(utilizator);
+    }
+    public void handleLoginUser(ActionEvent actionEvent) {
+        var utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
+        if(utilizator == null){
+            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "", "Nu ai selectat niciun utilizator");
+            return;
+        }
+        var gasit = listaUseriLogati.get(utilizator.getId());
+        if(gasit != null){
+            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "", "Exista deja userul!");
+            return;
+        }
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("views/user_view.fxml"));
+            AnchorPane root = fxmlLoader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle(utilizator.getFirstName());
+            this.listaUseriLogati.put(utilizator.getId(), root);
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+
+            UserController userController = fxmlLoader.getController();
+            userController.initUserController(serviceSocialNetwork, utilizator);
+            dialogStage.show();
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     //TODO Trebe sa fac link intre asta si noua fereastra care o sa se deschida

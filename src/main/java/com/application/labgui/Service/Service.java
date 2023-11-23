@@ -2,21 +2,17 @@ package com.application.labgui.Service;
 
 import com.application.labgui.AppExceptions.ServiceException;
 import com.application.labgui.AppExceptions.ValidationException;
-import com.application.labgui.Domain.Prietenie;
-import com.application.labgui.Domain.PrietenieDTO;
-import com.application.labgui.Domain.Tuplu;
-import com.application.labgui.Domain.Utilizator;
+import com.application.labgui.Domain.*;
+import com.application.labgui.Repository.MesajeDBRepository;
 import com.application.labgui.Repository.Repository;
 import com.application.labgui.Utils.DFS;
-import com.application.labgui.Utils.Events.ChangeEventType;
-import com.application.labgui.Utils.Events.Event;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
 import com.application.labgui.Utils.Observer.Observable;
-import com.application.labgui.Utils.Observer.Observer;
 import com.application.labgui.Validators.FactoryValidator;
 import com.application.labgui.Validators.Validator;
 import com.application.labgui.Validators.ValidatorStrategies;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
 import java.util.function.Consumer;
@@ -28,6 +24,8 @@ import java.util.stream.StreamSupport;
 public class Service implements Observable<ServiceChangeEvent> {
     private Repository<Long, Utilizator> repositoryUtilizatori;
     private Repository<Tuplu<Long, Long>, Prietenie> repositoryPrietenii;
+
+    private MesajeDBRepository repositoryMesaje;
     private Validator validatorUtilizator;
     private Validator validatorPrietenie;
 
@@ -54,18 +52,59 @@ public class Service implements Observable<ServiceChangeEvent> {
 
     /**
      * constructor service
+     *
      * @param repositoryUtilizatori
      * @param repositoryPrietenii
-     * @param strategies strategie de validare pentru utilizator
-     * @param strategies1 strategie de validare pentru prietenie
+     * @param repositoryMesaje
+     * @param strategies            strategie de validare pentru utilizator
+     * @param strategies1           strategie de validare pentru prietenie
      */
-    public Service(Repository repositoryUtilizatori, Repository repositoryPrietenii, ValidatorStrategies strategies, ValidatorStrategies strategies1) {
+    public Service(Repository repositoryUtilizatori, Repository repositoryPrietenii, MesajeDBRepository repositoryMesaje, ValidatorStrategies strategies, ValidatorStrategies strategies1) {
         this.repositoryUtilizatori = repositoryUtilizatori;
         this.repositoryPrietenii = repositoryPrietenii;
+        this.repositoryMesaje = repositoryMesaje;
         var factory = FactoryValidator.getFactoryInstance();
         this.validatorUtilizator = factory.createValidator(strategies);
         this.validatorPrietenie = factory.createValidator(strategies1);
         loadIdGenerator();
+    }
+
+    public void sentNewMessage(Long idSender, List<Long> idDestinations, String textDeTrimis, LocalDateTime dataTrimiterii){
+        Mesaj mesajNou = new Mesaj(idSender, idDestinations, textDeTrimis, dataTrimiterii);
+        var response = repositoryMesaje.save(mesajNou);
+        if(response.isPresent()){
+            throw new ServiceException("Mesajul nu a putut fi trimis!");
+        }
+        this.notifyAllObservers(new ServiceChangeEvent());
+    }
+
+    public void sentNewMessage(Long idSender, Long idMesajReplyTo, String textDeTrimis, LocalDateTime dataTrimiterii){
+        var replyTo = repositoryMesaje.findOne(idMesajReplyTo).get();
+        Mesaj mesajNou = new Mesaj(idSender, replyTo, textDeTrimis, dataTrimiterii);
+        var response = repositoryMesaje.save(mesajNou);
+        if(response.isPresent()){
+            throw new ServiceException("Mesajul nu a putut fi trimis!");
+        }
+        this.notifyAllObservers(new ServiceChangeEvent());
+    }
+
+    public Optional<Mesaj> findOneMessage(Long aLong){
+        return repositoryMesaje.findOne(aLong);
+    }
+
+    public Iterable<Mesaj> getAllMessagesBetween(Long user1, Long user2){
+        var lista = this.repositoryMesaje.findMesajeBetween(user1, user2);
+        return StreamSupport.stream(lista.spliterator(), false).sorted((x, y)->{
+            if (x.getData().equals(y.getData())){
+                return 0;
+            }
+            var i = x.getData().isBefore(y.getData());
+            return !i ? 1 : -1;
+        }).collect(Collectors.toList());
+    }
+
+    public Iterable<Mesaj> getAllMessages(){
+        return this.repositoryMesaje.findAll();
     }
 
     /**

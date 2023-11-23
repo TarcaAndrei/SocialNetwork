@@ -9,49 +9,33 @@
          <children>
             <SplitPane dividerPositions="0.7156040268456375" orientation="VERTICAL">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="285.0" prefWidth="597.0">
+                  <HBox fx:id="hBoxTables" prefHeight="281.3333333333333" prefWidth="600">
                      <children>
-                        <HBox fx:id="hBoxTables" prefHeight="281.3333333333333" prefWidth="597.3333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                               <TableView fx:id="utilizatorTableView">
-                                   <columns>
-                                       <TableColumn fx:id="columnID" prefWidth="46.66668701171875" text="ID" />
-                                       <TableColumn fx:id="columnFirstName" minWidth="0.0" prefWidth="123.33331680297852" text="Prenume" />
-                                       <TableColumn fx:id="columnLastName" minWidth="0.0" prefWidth="134.6666717529297" text="Nume" />
-                                   </columns>
-                               </TableView>
-                              <TableView fx:id="prieteniTableView">
-                                  <columns>
-                                      <TableColumn fx:id="columnID1" prefWidth="27.000003218650818" text="ID" />
-                                      <TableColumn fx:id="columnFirstName1" minWidth="0.0" prefWidth="90.9999942779541" text="Prenume" />
-                                      <TableColumn fx:id="columnLastName1" minWidth="0.0" prefWidth="77.0" text="Nume" />
-                                    <TableColumn fx:id="columnFriendsFrom" prefWidth="94.99996948242188" text="FriendsFrom" />
-                                  </columns>
-                              </TableView>
-                           </children></HBox>
+                         <TableView fx:id="utilizatorTableView" HBox.hgrow="ALWAYS">
+                             <columns>
+                                 <TableColumn fx:id="columnID" prefWidth="50.0" text="ID" />
+                                 <TableColumn fx:id="columnFirstName" minWidth="0.0" prefWidth="250.0" text="Prenume" />
+                                 <TableColumn fx:id="columnLastName" minWidth="0.0" prefWidth="300.0" text="Nume" />
+                             </columns>
+                         </TableView>
                      </children>
-                  </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="285.0" prefWidth="597.0">
+                  </HBox>
+                  <HBox prefHeight="110.0" prefWidth="597.3333333333334">
                      <children>
-                        <HBox prefHeight="110.0" prefWidth="597.3333333333334" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <ButtonBar prefHeight="110.0" prefWidth="309.0">
-                                <buttons>
-                                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" text="Add" style="-fx-background-color: lightblue;" />
-                                    <Button mnemonicParsing="false" onAction="#handleUpdateUtilizator" text="Update" style="-fx-background-color: lightgreen;"/>
-                                    <Button mnemonicParsing="false" onAction="#handleDeleteUtilizator" text="Delete" style="-fx-background-color: lightcoral;"/>
-                                </buttons>
-                              </ButtonBar>
-                              <ButtonBar prefHeight="110.0" prefWidth="291.0">
-                                <buttons>
-                                    <Button mnemonicParsing="false" prefHeight="25.0" onAction="#handleAddPrietenie" prefWidth="154.0" text="Adauga Prietenie" style="-fx-background-color: lightblue;" />
-                                    <Button fx:id="buttonDeletePrietenie" mnemonicParsing="false" onAction="#handleDeletePrietenie" prefHeight="25.0" text="Delete Prietenie" style="-fx-background-color: lightcoral" />
-                                </buttons>
-                              </ButtonBar>
-                           </children>
-                        </HBox>
+                        <ButtonBar prefHeight="110.0" prefWidth="309.0">
+                          <buttons>
+                            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" style="-fx-background-color: lightblue;" text="Add" />
+                              <Button mnemonicParsing="false" onAction="#handleUpdateUtilizator" style="-fx-background-color: lightgreen;" text="Update" />
+                              <Button mnemonicParsing="false" onAction="#handleDeleteUtilizator" style="-fx-background-color: lightcoral;" text="Delete" />
+                          </buttons>
+                        </ButtonBar>
+                        <ButtonBar prefHeight="110.0" prefWidth="291.0">
+                          <buttons>
+                              <Button fx:id="loginUser" mnemonicParsing="false" onAction="#handleLoginUser" prefHeight="25.0" prefWidth="154.0" style="-fx-background-color: lightblue;" text="Login as User" />
+                          </buttons>
+                        </ButtonBar>
                      </children>
-                  </AnchorPane>
+                  </HBox>
               </items>
             </SplitPane>
          </children>
