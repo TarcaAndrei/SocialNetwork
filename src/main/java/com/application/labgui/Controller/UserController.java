@@ -77,6 +77,7 @@ public class UserController implements Observer<ServiceChangeEvent> {
                 throw new RuntimeException(e);
             }
         });
+        scrollPane.setVvalue(1.0);
 //        scrollPane.setFitToWidth(true);
 //        scrollPane.vvalueProperty().bind(vBox.heightProperty());
     }

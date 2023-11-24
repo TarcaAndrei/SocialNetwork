@@ -20,6 +20,9 @@ public class FactoryValidator {
             case PRIETENIE -> {
                 return new PrietenieValidator();
             }
+            case CEREREPRIETENIE -> {
+                return new CererePrietenieValidator();
+            }
             default ->
             {
                 return null;
