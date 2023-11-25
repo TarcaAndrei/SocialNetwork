@@ -37,7 +37,11 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
                 Long idSender = resultSet.getLong("iduser1");
                 Long idRecv = resultSet.getLong("iduser2");
                 Integer status = resultSet.getInt("stare_cerere");
-                LocalDateTime friendsFrom = resultSet.getTimestamp("friendsFrom").toLocalDateTime();
+                LocalDateTime friendsFrom = null;
+                var data = resultSet.getTimestamp("datecreated");
+                if(data!=null){
+                    friendsFrom = data.toLocalDateTime();
+                }
                 CererePrietenie prietenie = new CererePrietenie(idSender, idRecv, friendsFrom, status);
                 return Optional.of(prietenie);
             }
@@ -58,7 +62,11 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
                 Long idSender = resultSet.getLong("iduser1");
                 Long idRecv = resultSet.getLong("iduser2");
                 Integer status = resultSet.getInt("stare_cerere");
-                LocalDateTime friendsFrom = resultSet.getTimestamp("friendsFrom").toLocalDateTime();
+                LocalDateTime friendsFrom = null;
+                var data = resultSet.getTimestamp("datecreated");
+                if(data!=null){
+                    friendsFrom = data.toLocalDateTime();
+                }
                 CererePrietenie cererePrietenie = new CererePrietenie(idSender, idRecv, friendsFrom, status);
                 entities.put(cererePrietenie.getId(), cererePrietenie);
             }
@@ -68,7 +76,7 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
         return entities.values();
     }
 
-    public Iterable<CererePrietenie> findPrieteniiUser(Long idUser){
+    public Iterable<CererePrietenie> findCereriUser(Long idUser){
         HashMap<Tuplu<Long, Long>, CererePrietenie> entities = new HashMap<>();
         try (Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD)) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM cereriprietenie WHERE iduser1 = ? OR iduser2 = ?");
@@ -79,7 +87,11 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
                 Long idSender = resultSet.getLong("iduser1");
                 Long idRecv = resultSet.getLong("iduser2");
                 Integer status = resultSet.getInt("stare_cerere");
-                LocalDateTime friendsFrom = resultSet.getTimestamp("friendsFrom").toLocalDateTime();
+                LocalDateTime friendsFrom = null;
+                var data = resultSet.getTimestamp("datecreated");
+                if(data!=null){
+                    friendsFrom = data.toLocalDateTime();
+                }
                 CererePrietenie cererePrietenie = new CererePrietenie(idSender, idRecv, friendsFrom, status);
                 entities.put(cererePrietenie.getId(), cererePrietenie);
             }
@@ -92,7 +104,10 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
     @Override
     public Optional<CererePrietenie> save(CererePrietenie entity) {
         cererePrietenieValidator.validate(entity);
-        String sqlStatement = "INSERT INTO cereriprietenie(iduser1, iduser2, datecreated, stare_cerere) VALUES (?, ?, ?);";
+        if(findOne(entity.getId()).isPresent()){
+            return Optional.of(entity);
+        }
+        String sqlStatement = "INSERT INTO cereriprietenie(iduser1, iduser2, datecreated, stare_cerere) VALUES (?, ?, ?, ?);";
         var optional = findOne(entity.getId());
         if(optional.isPresent()){
             return Optional.of(entity);
@@ -101,7 +116,13 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)){
             preparedStatement.setLong(1, entity.getId().getLeft());
             preparedStatement.setLong(2, entity.getId().getRight());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(entity.getDateCreated()));
+            if(entity.getDateCreated()==null){
+                preparedStatement.setTimestamp(3, null);
+            }
+            else{
+                preparedStatement.setTimestamp(3, Timestamp.valueOf(entity.getDateCreated()));
+            }
+            preparedStatement.setInt(4, entity.getStatus());
             var responseSQL =preparedStatement.executeUpdate();
             return responseSQL==0 ? Optional.of(entity) : Optional.empty();
         } catch (SQLException e) {
@@ -132,16 +153,22 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
 
     @Override
     public Optional<CererePrietenie> update(CererePrietenie entity) {
-        String sqlStatement = "UPDATE prietenii P SET friendsfrom = ? WHERE (P.iduser1 = ? AND P.iduser2 = ?) OR (P.iduser2 = ? AND P.iduser1 = ?)";
+        String sqlStatement = "UPDATE cereriprietenie P SET datecreated = ?, stare_cerere = ? WHERE (P.iduser1 = ? AND P.iduser2 = ?) OR (P.iduser2 = ? AND P.iduser1 = ?)";
         cererePrietenieValidator.validate(entity);
         try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
         ){
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(entity.getDateCreated()));
-            preparedStatement.setLong(2 ,entity.getId().getLeft());
-            preparedStatement.setLong(3 ,entity.getId().getRight());
-            preparedStatement.setLong(4 ,entity.getId().getLeft());
-            preparedStatement.setLong(5 ,entity.getId().getRight());
+            if(entity.getDateCreated()==null){
+                preparedStatement.setTimestamp(1, null);
+            }
+            else{
+                preparedStatement.setTimestamp(1, Timestamp.valueOf(entity.getDateCreated()));
+            }
+            preparedStatement.setInt(2, entity.getStatus());
+            preparedStatement.setLong(3 ,entity.getId().getLeft());
+            preparedStatement.setLong(4 ,entity.getId().getRight());
+            preparedStatement.setLong(5 ,entity.getId().getLeft());
+            preparedStatement.setLong(6 ,entity.getId().getRight());
             var response = preparedStatement.executeUpdate();
             return response==0 ? Optional.of(entity) : Optional.empty();
         } catch (SQLException e) {
@@ -152,7 +179,7 @@ public class CereriPrieteniiDBRepository implements Repository<Tuplu<Long, Long>
     @Override
     public int size() {
         try (Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD)) {
-            PreparedStatement statement = connection.prepareStatement("SELECT count(*) FROM prietenii");
+            PreparedStatement statement = connection.prepareStatement("SELECT count(*) FROM cereriprietenie");
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
             return resultSet.getInt(1);

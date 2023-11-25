@@ -4,6 +4,15 @@ import java.time.LocalDateTime;
 
 public class CererePrietenie extends Entitate<Tuplu<Long, Long>>{
     LocalDateTime dateCreated;
+
+    public int getStatus() {
+        return status;
+    }
+
+//    public void setStatus(int status) {
+//        this.status = status;
+//    }
+
     private int status;
     public static final int PENDING = 0;
     public static final int ACCPETED = 1;

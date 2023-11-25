@@ -3,8 +3,12 @@ package com.application.labgui.Controller;
 
 import com.application.labgui.Domain.Mesaj;
 import com.application.labgui.Domain.Utilizator;
+import com.application.labgui.Utils.Events.ReplyEvent;
+import com.application.labgui.Utils.Observer.Observable;
+import javafx.event.ActionEvent;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -20,10 +24,14 @@ public class MesajViewController  {
     public Label dataTextEl;
     public Label mesajReplyTextEl;
     public TextArea textAreaEl;
+    public Button replyButton;
     private Utilizator sender;
     private Mesaj mesaj;
 
-    public void initMesaj(Mesaj mesaj, Utilizator sender){
+    private UserController parent;
+
+    public void initMesaj(UserController parent, Mesaj mesaj, Utilizator sender){
+        this.parent = parent;
         this.mesaj = mesaj;
         this.sender = sender;
         configure();
@@ -41,7 +49,7 @@ public class MesajViewController  {
             }
             else{
                 mesajReplyTextEu.setVisible(true);
-                var mesajulLaCareSeDa = mesaj.getReplyTo().getMesajScris().substring(0, 10);
+                var mesajulLaCareSeDa = mesaj.getReplyTo().getMesajScris().substring(0, Math.min(20, mesaj.getReplyTo().getMesajScris().length()));
                 mesajulLaCareSeDa += "...";
                 mesajReplyTextEu.setText(mesajulLaCareSeDa);
             }
@@ -57,7 +65,8 @@ public class MesajViewController  {
             }
             else{
                 mesajReplyTextEl.setVisible(true);
-                var mesajulLaCareSeDa = mesaj.getReplyTo().getMesajScris().substring(0, 10);
+                var mesajScris = mesaj.getReplyTo().getMesajScris();
+                var mesajulLaCareSeDa = mesajScris.substring(0, Math.min(20, mesajScris.length())) + "...";
                 mesajulLaCareSeDa += "...";
                 mesajReplyTextEl.setText(mesajulLaCareSeDa);
             }
@@ -65,4 +74,7 @@ public class MesajViewController  {
     }
 
 
+    public void handlerReply(ActionEvent actionEvent) {
+        this.parent.setReply(mesaj);
+    }
 }

@@ -248,15 +248,18 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("views/user_view.fxml"));
             AnchorPane root = fxmlLoader.load();
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle(utilizator.getFirstName());
+            Stage userStage = new Stage();
+            userStage.setTitle(utilizator.getFirstName());
             this.listaUseriLogati.put(utilizator.getId(), root);
             Scene scene = new Scene(root);
-            dialogStage.setScene(scene);
-
+            userStage.setScene(scene);
+            userStage.setOnCloseRequest(event -> {
+//                System.out.println("Close button was clicked!");
+                listaUseriLogati.remove(utilizator.getId());
+            });
             UserController userController = fxmlLoader.getController();
             userController.initUserController(serviceSocialNetwork, utilizator);
-            dialogStage.show();
+            userStage.show();
         }
         catch (IOException e){
             System.out.println(e.getMessage());

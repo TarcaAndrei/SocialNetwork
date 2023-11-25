@@ -36,10 +36,10 @@ public class Mesaj extends Entitate<Long> {
         this.data = LocalDateTime.now();
     }
 
-    public Mesaj(Long fromUser, Mesaj replyTo, String mesajScris, LocalDateTime data) {
+    public Mesaj(Long fromUser, Long toUser, Mesaj replyTo, String mesajScris, LocalDateTime data) {
         this.fromUser = fromUser;
         this.replyTo = replyTo;
-        this.toUsers = Collections.singletonList(replyTo.getFromUser());
+        this.toUsers = Collections.singletonList(toUser);
         this.mesajScris = mesajScris;
         this.data = data;
     }
@@ -93,5 +93,7 @@ public class Mesaj extends Entitate<Long> {
                 ", data=" + data +
                 ", replyTo=" + replyTo;
     }
+
+    //fa altfel functiile
 }
 

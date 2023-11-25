@@ -3,9 +3,11 @@ package com.application.labgui.Service;
 import com.application.labgui.AppExceptions.ServiceException;
 import com.application.labgui.AppExceptions.ValidationException;
 import com.application.labgui.Domain.*;
+import com.application.labgui.Repository.CereriPrieteniiDBRepository;
 import com.application.labgui.Repository.MesajeDBRepository;
 import com.application.labgui.Repository.Repository;
 import com.application.labgui.Utils.DFS;
+import com.application.labgui.Utils.Events.ChangeEventType;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
 import com.application.labgui.Utils.Observer.Observable;
 import com.application.labgui.Validators.FactoryValidator;
@@ -25,48 +27,33 @@ public class Service implements Observable<ServiceChangeEvent> {
     private Repository<Long, Utilizator> repositoryUtilizatori;
     private Repository<Tuplu<Long, Long>, Prietenie> repositoryPrietenii;
 
+    private CereriPrieteniiDBRepository repositoryCereriPrietenii;
+
     private MesajeDBRepository repositoryMesaje;
     private Validator validatorUtilizator;
     private Validator validatorPrietenie;
+    private Validator validatorCererePrietenie;
 
-    private long idUtilizatorNou;
-
-    /**
-     * functia care genereaza id-uri unice incepand cu 1
-     */
-    private void loadIdGenerator(){
-        idUtilizatorNou = 0;
-        repositoryUtilizatori.findAll().forEach( x->{
-            idUtilizatorNou = Math.max(idUtilizatorNou, x.getId());
-        });
-    }
-
-    /**
-     *
-     * @return un id unic
-     */
-    private long getIdUtilizatorNou(){
-        idUtilizatorNou++;
-        return idUtilizatorNou;
-    }
 
     /**
      * constructor service
      *
      * @param repositoryUtilizatori
+     * @param repositoryCereriPrietenii
      * @param repositoryPrietenii
      * @param repositoryMesaje
-     * @param strategies            strategie de validare pentru utilizator
-     * @param strategies1           strategie de validare pentru prietenie
+     * @param strategies                strategie de validare pentru utilizator
+     * @param strategies1               strategie de validare pentru prietenie
      */
-    public Service(Repository repositoryUtilizatori, Repository repositoryPrietenii, MesajeDBRepository repositoryMesaje, ValidatorStrategies strategies, ValidatorStrategies strategies1) {
+    public Service(Repository repositoryUtilizatori, CereriPrieteniiDBRepository repositoryCereriPrietenii, Repository repositoryPrietenii, MesajeDBRepository repositoryMesaje, ValidatorStrategies strategies, ValidatorStrategies strategies1) {
         this.repositoryUtilizatori = repositoryUtilizatori;
+        this.repositoryCereriPrietenii = repositoryCereriPrietenii;
         this.repositoryPrietenii = repositoryPrietenii;
         this.repositoryMesaje = repositoryMesaje;
         var factory = FactoryValidator.getFactoryInstance();
         this.validatorUtilizator = factory.createValidator(strategies);
         this.validatorPrietenie = factory.createValidator(strategies1);
-        loadIdGenerator();
+        this.validatorCererePrietenie = factory.createValidator(ValidatorStrategies.CEREREPRIETENIE);
     }
 
     public void sentNewMessage(Long idSender, List<Long> idDestinations, String textDeTrimis, LocalDateTime dataTrimiterii){
@@ -75,17 +62,18 @@ public class Service implements Observable<ServiceChangeEvent> {
         if(response.isPresent()){
             throw new ServiceException("Mesajul nu a putut fi trimis!");
         }
-        this.notifyAllObservers(new ServiceChangeEvent());
+        this.notifyAllObservers(new ServiceChangeEvent(ChangeEventType.MESSAGES, idSender, idDestinations.get(0)));
     }
 
-    public void sentNewMessage(Long idSender, Long idMesajReplyTo, String textDeTrimis, LocalDateTime dataTrimiterii){
+    public void sentNewMessage(Long idSender, Long idRecv, Long idMesajReplyTo, String textDeTrimis, LocalDateTime dataTrimiterii){
         var replyTo = repositoryMesaje.findOne(idMesajReplyTo).get();
-        Mesaj mesajNou = new Mesaj(idSender, replyTo, textDeTrimis, dataTrimiterii);
+        Mesaj mesajNou = new Mesaj(idSender, idRecv,  replyTo,textDeTrimis, dataTrimiterii);
         var response = repositoryMesaje.save(mesajNou);
         if(response.isPresent()){
             throw new ServiceException("Mesajul nu a putut fi trimis!");
         }
-        this.notifyAllObservers(new ServiceChangeEvent());
+        var replyToID = replyTo.getFromUser();
+        this.notifyAllObservers(new ServiceChangeEvent(ChangeEventType.MESSAGES, idSender, idRecv));
     }
 
     public Optional<Mesaj> findOneMessage(Long aLong){
@@ -183,8 +171,61 @@ public class Service implements Observable<ServiceChangeEvent> {
         u2.addFriend(u1);
         updateUser.accept(u1);
         updateUser.accept(u2);
-        this.notifyAllObservers(new ServiceChangeEvent());
+        this.notifyAllObservers(new ServiceChangeEvent(ChangeEventType.FRIENDS, idU1, idU2));
     }
+
+    public void trimiteCererePrietenie(Long idUserSender, Long idUserRecv){
+        Predicate<Long> existaUser = idUser->repositoryUtilizatori.findOne(idUser).isPresent();
+        if(!(existaUser.test(idUserSender) && existaUser.test(idUserRecv))){
+            throw new ServiceException("Nu exista userii!");
+        }
+        CererePrietenie cererePrietenie = new CererePrietenie(idUserSender, idUserRecv);
+        this.validatorCererePrietenie.validate(cererePrietenie);
+        var response = repositoryCereriPrietenii.save(cererePrietenie);
+        if(response.isPresent()){
+            throw new ServiceException("Cererea de prietenie exista deja!");
+        }
+        this.notifyAllObservers(new ServiceChangeEvent(ChangeEventType.FRIENDS, idUserRecv, idUserSender));
+    }
+
+    public void acceptCererePrietenie(Long idUserSender, Long idUserRecv){
+        var cerereMomentanaOpt = this.repositoryCereriPrietenii.findOne(new Tuplu<>(idUserSender, idUserRecv));
+        if(cerereMomentanaOpt.isEmpty()){
+            throw new ServiceException("Nu exista1");
+        }
+        var cerereMomentan = cerereMomentanaOpt.get();
+        cerereMomentan.setAccepted();
+        var entitatea = this.repositoryCereriPrietenii.update(cerereMomentan);
+        if(entitatea.isPresent()){
+            throw new ServiceException("Ceva nu a mers bine");
+        }
+        Consumer<Utilizator> updateUser = repositoryUtilizatori::update;
+        var u1 = repositoryUtilizatori.findOne(idUserSender).get();
+        var u2 = repositoryUtilizatori.findOne(idUserRecv).get();
+        u1.addFriend(u2);
+        u2.addFriend(u1);
+        updateUser.accept(u1);
+        updateUser.accept(u2);
+        this.notifyAllObservers(new ServiceChangeEvent(ChangeEventType.FRIENDS, idUserRecv, idUserSender));
+    }
+    public void refuseCererePrietenie(Long idUserSender, Long idUserRecv){
+        var cerereMomentanaOpt = this.repositoryCereriPrietenii.findOne(new Tuplu<>(idUserSender, idUserRecv));
+        if(cerereMomentanaOpt.isEmpty()){
+            throw new ServiceException("Nu exista1");
+        }
+        var cerereMomentan = cerereMomentanaOpt.get();
+        cerereMomentan.setRefused();
+        var entitatea = this.repositoryCereriPrietenii.update(cerereMomentan);
+        if(entitatea.isPresent()){
+            throw new ServiceException("Ceva nu a mers bine");
+        }
+        this.notifyAllObservers(new ServiceChangeEvent(ChangeEventType.FRIENDS, idUserRecv, idUserSender));
+    }
+
+    public Optional<CererePrietenie> getRelatieBetween(Long idUser1, Long idUser2){
+        return this.repositoryCereriPrietenii.findOne(new Tuplu<>(idUser1, idUser2));
+    }
+
 
     public void updateUser(Long idUtilizator, String numeNou, String prenumeNou){
         var utilizatorNou = new Utilizator(prenumeNou, numeNou);
@@ -336,6 +377,65 @@ public class Service implements Observable<ServiceChangeEvent> {
             listaPrieteni.add(prietenieDTIO);
         });
         return listaPrieteni;
+    }
+
+    public HashMap<Integer, List<Utilizator>> cereriDePrietenie(Long idUser){
+        HashMap<Integer, List<Utilizator>> returnDict = new HashMap<>();
+        List<Utilizator> listaPrieteni = new ArrayList<>();
+        List<Utilizator> listaUtilizatoriCereri = new ArrayList<>();
+
+        var optionalUtilizator = findOne(idUser);
+        if(optionalUtilizator.isEmpty()){
+            return returnDict;
+        }
+        var listaInitiala = repositoryCereriPrietenii.findCereriUser(idUser);
+        listaInitiala.forEach(x->{
+            Utilizator utilizator;
+            if(x.getId().getLeft().equals(idUser)){
+                utilizator = repositoryUtilizatori.findOne(x.getId().getRight()).get();
+            }
+            else{
+                utilizator = repositoryUtilizatori.findOne(x.getId().getLeft()).get();
+            }
+            if(x.getStatus() == CererePrietenie.ACCPETED) {
+                listaPrieteni.add(utilizator);
+            }
+            else{
+                listaUtilizatoriCereri.add(utilizator);
+            }
+        });
+        returnDict.put(1, listaPrieteni);
+        returnDict.put(2, listaUtilizatoriCereri);
+        return returnDict;
+//        listaInitiala.forEach(x->{
+//            if(x.getStatus() == CererePrietenie.ACCPETED){
+//                listaPrieteni.add(x);
+//            } else if (x.getStatus() == CererePrietenie.PENDING) {
+//                //acum le avem pe cele pending
+//                if(x.getId().getLeft().equals(idUser)){
+//                //daca cel care o trimis ii userul
+//                    listaCereriTrimisePending.add(x);
+//                }
+//                else{
+//                    listaCereriPrimitePending.add(x);
+//                }
+//            } else if (x.getStatus() == CererePrietenie.REFUSED) {
+//                //acum le avem pe cele refused
+//                if(x.getId().getLeft().equals(idUser)){
+//                    //daca cel care o trimis ii userul
+//                    listaCereriTrimiseRespinse.add(x);
+//                }
+//                else{
+//                    listaCereriPrimiteRespinse.add(x);
+//                }
+//            }
+//        });
+//        returnDict.put("prieteni", listaPrieteni);
+//        returnDict.put("trimisePending", listaCereriTrimisePending);
+//        returnDict.put("trimiseRespinse", listaCereriTrimiseRespinse);
+//        returnDict.put("primitePending", listaCereriPrimitePending);
+//        returnDict.put("primiteRespinse", listaCereriPrimiteRespinse);
+//        return returnDict;
     }
 
     public List<PrietenieDTO> relatiiDePrietenieLuna(Long idUser, Integer luna){

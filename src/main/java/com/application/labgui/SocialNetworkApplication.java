@@ -48,19 +48,20 @@ public class SocialNetworkApplication extends Application{
 
 
     private void intialize(FXMLLoader fxmlLoader){
-        ValidatorStrategies validatorStrategies = ValidatorStrategies.UTILIZATOR;
-        ValidatorStrategies validatorPrietenieStrategie = ValidatorStrategies.PRIETENIE;
         DBConnection dbConnection = new DBConnection();
         Repository<Long, Utilizator> userDBRepository = new UtilizatorDBRepository(dbConnection, ValidatorStrategies.UTILIZATOR);
         Repository<Tuplu<Long, Long>, Prietenie> prietenieDBRepository = new PrietenieDBRepository(dbConnection, ValidatorStrategies.PRIETENIE);
+        CereriPrieteniiDBRepository repositoryCereriPrietenii = new CereriPrieteniiDBRepository(dbConnection, ValidatorStrategies.CEREREPRIETENIE);
         MesajeDBRepository mesajDBRepository = new MesajeDBRepository(dbConnection);
-        Service serviceApp = new Service(userDBRepository, prietenieDBRepository, mesajDBRepository, validatorStrategies, validatorPrietenieStrategie);
+        Service serviceApp = new Service(userDBRepository, repositoryCereriPrietenii, prietenieDBRepository, mesajDBRepository, ValidatorStrategies.UTILIZATOR, ValidatorStrategies.PRIETENIE);
         SocialNetworkController socialNetworkController = fxmlLoader.getController();
         socialNetworkController.setServiceSocialNetwork(serviceApp);
 //        Consola consola = new Consola(serviceApp);
 //        consola.run();
     }
     public static void main(String[] args) {
+//        Utilizator ceva = null;
+//        ceva.getId();
 //        tests();
         launch();
     }
@@ -72,11 +73,12 @@ public class SocialNetworkApplication extends Application{
         Repository<Long, Utilizator> userDBRepository = new UtilizatorDBRepository(dbConnection, ValidatorStrategies.UTILIZATOR);
         Repository<Tuplu<Long, Long>, Prietenie> prietenieDBRepository = new PrietenieDBRepository(dbConnection, ValidatorStrategies.PRIETENIE);
         MesajeDBRepository mesajDBRepository = new MesajeDBRepository(dbConnection);
-        Service serviceApp = new Service(userDBRepository, prietenieDBRepository, mesajDBRepository, validatorStrategies, validatorPrietenieStrategie);
+        CereriPrieteniiDBRepository repositoryCereriPrietenii = new CereriPrieteniiDBRepository(dbConnection, ValidatorStrategies.CEREREPRIETENIE);
+        Service serviceApp = new Service(userDBRepository, repositoryCereriPrietenii, prietenieDBRepository, mesajDBRepository, validatorStrategies, validatorPrietenieStrategie);
         System.out.println(serviceApp.getAllMessages());
 //        serviceApp.sentNewMessage(10L, Collections.singletonList(14L), "Te rog vreau sa plec!", LocalDateTime.now());
 //        var mesaj = serviceApp.findOneMessage(10L).get();
-        serviceApp.sentNewMessage(14L, 10L, "SI EU VREAU SA PLEC", LocalDateTime.now());
+//        serviceApp.sentNewMessage(14L, 10L, "SI EU VREAU SA PLEC", LocalDateTime.now());
         System.out.println(serviceApp.getAllMessages());
     }
 
