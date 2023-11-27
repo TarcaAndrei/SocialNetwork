@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.labgui.Controller.UserController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.labgui.Controller.UserController"  stylesheets="@../../FrontEndBeauty/user_view.css">
    <children>
       <SplitPane dividerPositions="0.29797979797979796" layoutX="189.0" layoutY="71.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -28,13 +28,13 @@
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints maxHeight="127.0" minHeight="0.0" prefHeight="29.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="127.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="127.0" minHeight="0.0" prefHeight="29.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="347.0" minHeight="10.0" prefHeight="272.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="180.66663614908856" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <ButtonBar fx:id="baraButoane" prefHeight="40.0" prefWidth="200.0">
+                        <ButtonBar fx:id="baraButoane" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1">
                           <buttons>
                               <Label fx:id="numeCunoscut" prefHeight="17.0" prefWidth="328.0" text="NumePrieten poate" />
                               <Button fx:id="acceptaCererea" mnemonicParsing="false" onAction="#handlerAcceptaCererea" text="Accepta Cererea" />
@@ -42,10 +42,10 @@
                           </buttons>
                         </ButtonBar>
                         <ScrollPane fx:id="scrollPane" prefHeight="192.0" prefWidth="416.0" GridPane.rowIndex="2" />
-                        <ButtonBar fx:id="baraPrietenButoane" prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1">
+                        <ButtonBar fx:id="baraPrietenButoane" prefHeight="40.0" prefWidth="200.0">
                           <buttons>
                               <Label fx:id="numePrieten" prefHeight="17.0" prefWidth="362.0" text="NumePrieten" />
-                            <Button fx:id="stergePrieten" mnemonicParsing="false" text="Sterge Prieten" />
+<!--                            <Button fx:id="stergePrieten" mnemonicParsing="false" text="Sterge Prieten" />-->
                           </buttons>
                         </ButtonBar>
                         <GridPane fx:id="gridSendMessage" GridPane.rowIndex="3">
@@ -60,7 +60,7 @@
                            <children>
                               <TextField fx:id="mesajNou" prefHeight="25.0" prefWidth="316.0" GridPane.rowIndex="1" />
                               <Button fx:id="sendButton" mnemonicParsing="false" onAction="#sendMesssage" prefHeight="25.0" prefWidth="119.0" text="Trimite" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button fx:id="removeReply" onAction="#removeReply" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="X" textAlignment="CENTER" GridPane.columnIndex="1" />
+                              <Button fx:id="removeReply" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#removeReply" prefHeight="25.0" prefWidth="130.0" text="X" textAlignment="CENTER" GridPane.columnIndex="1" />
                               <Label fx:id="labelReply" prefHeight="17.0" prefWidth="131.0" text="ReplyMessage" />
                            </children>
                         </GridPane>

@@ -1,0 +1,66 @@
+/* Stiluri generale pentru AnchorPane */
+#mesajAnchorPane, #userAnchorPane {
+    -fx-background-color: #add8e6; /* Albastru deschis pentru AnchorPane */
+}
+
+/* Stiluri pentru butoane */
+.button {
+    -fx-background-radius: 20;
+    -fx-font-size: 14;
+    -fx-background-color: #4CAF50; /* Verde pentru butoane */
+    -fx-text-fill: white; /* Culoarea textului pentru butoane */
+}
+
+/* Stiluri pentru TextField */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+    -fx-font-size: 14;
+}
+
+/* Stiluri pentru ListView */
+.list-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+}
+
+/* Stiluri pentru SplitPane */
+.split-pane {
+    -fx-divider-position: 0.3;
+}
+
+/* Stiluri pentru ScrollPane */
+.scroll-pane {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+}
+
+/* Stiluri pentru Label */
+.label {
+    -fx-font-size: 14;
+}
+
+/* Stiluri pentru ButtonBar */
+.button-bar {
+    -fx-background-color: transparent;
+}
+
+/* Stiluri pentru GridPane */
+.grid-pane {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+}
+
+/* Stiluri pentru ButtonBar buttons (pentru a face butoanele rotunde) */
+.button-bar .button, .grid-pane .button {
+    -fx-background-radius: 20;
+}
+
+/* Stiluri pentru SplitPane dividers */
+.split-pane *.split-pane-divider {
+    -fx-background-color: transparent;
+}

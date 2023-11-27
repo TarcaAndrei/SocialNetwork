@@ -1,0 +1,56 @@
+/* single_mesaj.css */
+
+/* Stiluri generale pentru AnchorPane */
+#mesajAnchorPane {
+    -fx-background-color: #f0f0f0; /* Culoarea de fundal a AnchorPane */
+}
+
+/* Stiluri pentru Label-uri */
+.label {
+    -fx-font-size: 10; /* Mărimea fontului pentru Label-uri */
+    -fx-text-fill: #808080; /* Culoarea textului pentru Label-uri */
+}
+
+/* Stiluri pentru dataTextEu */
+#dataTextEu {
+    -fx-text-fill: #808080; /* Culoarea textului pentru dataTextEu */
+}
+
+/* Stiluri pentru dataTextEl */
+#dataTextEl {
+    -fx-text-fill: #808080; /* Culoarea textului pentru dataTextEl */
+}
+
+/* Stiluri pentru mesajReplyTextEu */
+#mesajReplyTextEu {
+    -fx-font-style: italic; /* Textul de reply să fie italic */
+}
+
+/* Stiluri pentru mesajReplyTextEl */
+#mesajReplyTextEl {
+    -fx-font-style: italic; /* Textul de reply să fie italic */
+}
+
+/* Stiluri pentru TextArea-uri */
+.text-area {
+    -fx-background-color: #BFD9E5; /* Culoarea fundalului pentru TextArea-uri */
+    -fx-background-radius: 10; /* Margini rotunde pentru TextArea-uri */
+    -fx-border-color: transparent; /* Ascunde bordura pentru TextArea-uri */
+}
+
+/* Stiluri pentru Button */
+#replyButton {
+    /*-fx-background-color: #4CAF50; !* Culoarea verde pentru butonul de reply *!*/
+    -fx-text-fill: white; /* Culoarea textului pentru butonul de reply */
+    -fx-background-radius: 5; /* Margini rotunde pentru butonul de reply */
+}
+
+/* Stiluri pentru GridPane */
+.grid-pane {
+    -fx-background-color: #f0f0f0; /* Culoarea de fundal pentru GridPane */
+}
+
+/* Stiluri pentru GridPane buttons (pentru a face butoanele rotunde) */
+.grid-pane .button {
+    -fx-background-radius: 5; /* Margini rotunde pentru butoanele din GridPane */
+}
