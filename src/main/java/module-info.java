@@ -14,4 +14,10 @@ module com.application.labgui {
 
     opens com.application.labgui.Domain to java.base;
     exports com.application.labgui.Domain;
+
+    opens com.application.labgui.Repository.Paging;
+    exports com.application.labgui.Repository.Paging;
+
+    opens com.application.labgui.Repository;
+    exports com.application.labgui.Repository;
 }

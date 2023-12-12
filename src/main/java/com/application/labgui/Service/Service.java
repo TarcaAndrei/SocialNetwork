@@ -5,7 +5,10 @@ import com.application.labgui.AppExceptions.ValidationException;
 import com.application.labgui.Domain.*;
 import com.application.labgui.Repository.CereriPrieteniiDBRepository;
 import com.application.labgui.Repository.MesajeDBRepository;
+import com.application.labgui.Repository.Paging.Page;
+import com.application.labgui.Repository.Paging.Pageable;
 import com.application.labgui.Repository.Repository;
+import com.application.labgui.Repository.UtilizatorDBRepository;
 import com.application.labgui.Utils.DFS;
 import com.application.labgui.Utils.Events.ChangeEventType;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
@@ -24,7 +27,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class Service implements Observable<ServiceChangeEvent> {
-    private Repository<Long, Utilizator> repositoryUtilizatori;
+    private UtilizatorDBRepository repositoryUtilizatori;
     private Repository<Tuplu<Long, Long>, Prietenie> repositoryPrietenii;
 
     private CereriPrieteniiDBRepository repositoryCereriPrietenii;
@@ -45,7 +48,7 @@ public class Service implements Observable<ServiceChangeEvent> {
      * @param strategies                strategie de validare pentru utilizator
      * @param strategies1               strategie de validare pentru prietenie
      */
-    public Service(Repository repositoryUtilizatori, CereriPrieteniiDBRepository repositoryCereriPrietenii, Repository repositoryPrietenii, MesajeDBRepository repositoryMesaje, ValidatorStrategies strategies, ValidatorStrategies strategies1) {
+    public Service(UtilizatorDBRepository repositoryUtilizatori, CereriPrieteniiDBRepository repositoryCereriPrietenii, Repository repositoryPrietenii, MesajeDBRepository repositoryMesaje, ValidatorStrategies strategies, ValidatorStrategies strategies1) {
         this.repositoryUtilizatori = repositoryUtilizatori;
         this.repositoryCereriPrietenii = repositoryCereriPrietenii;
         this.repositoryPrietenii = repositoryPrietenii;
@@ -89,6 +92,10 @@ public class Service implements Observable<ServiceChangeEvent> {
             var i = x.getData().isBefore(y.getData());
             return !i ? 1 : -1;
         }).collect(Collectors.toList());
+    }
+
+    public Page<Utilizator> getUtilizatoriOnPage(Pageable pageable){
+        return repositoryUtilizatori.findAll(pageable);
     }
 
     public Iterable<Mesaj> getAllMessages(){

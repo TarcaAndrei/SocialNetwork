@@ -49,7 +49,7 @@ public class SocialNetworkApplication extends Application{
 
     private void intialize(FXMLLoader fxmlLoader){
         DBConnection dbConnection = new DBConnection();
-        Repository<Long, Utilizator> userDBRepository = new UtilizatorDBRepository(dbConnection, ValidatorStrategies.UTILIZATOR);
+        UtilizatorDBRepository userDBRepository = new UtilizatorDBRepository(dbConnection, ValidatorStrategies.UTILIZATOR);
         Repository<Tuplu<Long, Long>, Prietenie> prietenieDBRepository = new PrietenieDBRepository(dbConnection, ValidatorStrategies.PRIETENIE);
         CereriPrieteniiDBRepository repositoryCereriPrietenii = new CereriPrieteniiDBRepository(dbConnection, ValidatorStrategies.CEREREPRIETENIE);
         MesajeDBRepository mesajDBRepository = new MesajeDBRepository(dbConnection);
@@ -70,7 +70,7 @@ public class SocialNetworkApplication extends Application{
         ValidatorStrategies validatorStrategies = ValidatorStrategies.UTILIZATOR;
         ValidatorStrategies validatorPrietenieStrategie = ValidatorStrategies.PRIETENIE;
         DBConnection dbConnection = new DBConnection();
-        Repository<Long, Utilizator> userDBRepository = new UtilizatorDBRepository(dbConnection, ValidatorStrategies.UTILIZATOR);
+        UtilizatorDBRepository userDBRepository = new UtilizatorDBRepository(dbConnection, ValidatorStrategies.UTILIZATOR);
         Repository<Tuplu<Long, Long>, Prietenie> prietenieDBRepository = new PrietenieDBRepository(dbConnection, ValidatorStrategies.PRIETENIE);
         MesajeDBRepository mesajDBRepository = new MesajeDBRepository(dbConnection);
         CereriPrieteniiDBRepository repositoryCereriPrietenii = new CereriPrieteniiDBRepository(dbConnection, ValidatorStrategies.CEREREPRIETENIE);

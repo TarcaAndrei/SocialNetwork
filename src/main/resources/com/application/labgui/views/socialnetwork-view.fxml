@@ -7,7 +7,7 @@
    <children>
       <VBox layoutX="222.0" layoutY="69.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <SplitPane dividerPositions="0.7156040268456375" orientation="VERTICAL">
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
               <items>
                   <HBox fx:id="hBoxTables" prefHeight="281.3333333333333" prefWidth="600">
                      <children>
@@ -20,22 +20,34 @@
                          </TableView>
                      </children>
                   </HBox>
-                  <HBox prefHeight="110.0" prefWidth="597.3333333333334">
+                  <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
+                        <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                          <buttons>
+                            <Button fx:id="previousButton" onAction="#prevPage" minWidth="0.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="354.0" text="Previous" />
+                              <Button fx:id="nextButton" onAction="#nextPage" mnemonicParsing="false" prefHeight="25.0" text="Next" />
+                          </buttons>
+                        </ButtonBar>
+                        <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                          <buttons>
+                              <Label text="Number of Users per Page" />
+                              <ChoiceBox fx:id="choiceNumberOfUserPerPage" onAction="#changePagination" prefWidth="150.0" />
+                          </buttons>
+                        </ButtonBar>
                         <ButtonBar prefHeight="110.0" prefWidth="309.0">
                           <buttons>
-                            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" style="-fx-background-color: lightblue;" text="Add" />
+                            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" prefHeight="25.0" prefWidth="287.0" style="-fx-background-color: lightblue;" text="Add" />
                               <Button mnemonicParsing="false" onAction="#handleUpdateUtilizator" style="-fx-background-color: lightgreen;" text="Update" />
                               <Button mnemonicParsing="false" onAction="#handleDeleteUtilizator" style="-fx-background-color: lightcoral;" text="Delete" />
                           </buttons>
                         </ButtonBar>
                         <ButtonBar prefHeight="110.0" prefWidth="291.0">
                           <buttons>
-                              <Button fx:id="loginUser" mnemonicParsing="false" onAction="#handleLoginUser" prefHeight="25.0" prefWidth="154.0" style="-fx-background-color: lightblue;" text="Login as User" />
+                              <Button fx:id="loginUser" mnemonicParsing="false" onAction="#handleLoginUser" prefHeight="25.0" prefWidth="574.0" style="-fx-background-color: lightblue;" text="Login as User" />
                           </buttons>
                         </ButtonBar>
                      </children>
-                  </HBox>
+                  </VBox>
               </items>
             </SplitPane>
          </children>

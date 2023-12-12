@@ -5,6 +5,8 @@ import com.application.labgui.Domain.Prietenie;
 import com.application.labgui.Domain.PrietenieDTO;
 import com.application.labgui.Domain.Tuplu;
 import com.application.labgui.Domain.Utilizator;
+import com.application.labgui.Repository.Paging.Page;
+import com.application.labgui.Repository.Paging.Pageable;
 import com.application.labgui.Service.Service;
 import com.application.labgui.Utils.Events.ServiceChangeEvent;
 import com.application.labgui.Utils.Observer.Observer;
@@ -15,10 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -33,8 +32,12 @@ import java.util.stream.StreamSupport;
 
 public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     public Button loginUser;
+    public Button previousButton;
+    public Button nextButton;
+    public ChoiceBox<Integer> choiceNumberOfUserPerPage;
     private Service serviceSocialNetwork;
 
+    ObservableList<Integer> numberOfElements = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8);
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
     ObservableList<PrietenieDTO> modelPrieteni = FXCollections.observableArrayList();
 
@@ -49,17 +52,10 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     @FXML
     TableColumn<Utilizator, String> columnLastName;
 
+    private int currentPage=0;
+    private int numberOfRecordsPerPage = 5;
 
-//    @FXML
-//    TableView<PrietenieDTO> prieteniTableView;
-//    @FXML
-//    TableColumn<PrietenieDTO, Long> columnID1;
-//    @FXML
-//    TableColumn<PrietenieDTO, String> columnFirstName1;
-//    @FXML
-//    TableColumn<PrietenieDTO, String> columnLastName1;
-//    @FXML
-//    TableColumn<PrietenieDTO, LocalDateTime> columnFriendsFrom;
+    private int totalNumberOfElements;
 
     @FXML
     HBox hBoxTables;
@@ -69,17 +65,11 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         initModel();
     }
 
-    public void initialize() {
+    public void init_all() {
         listaUseriLogati = new HashMap<>();
-//        prieteniTableView.setVisible(false);
-//        buttonDeletePrietenie.setVisible(false);
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
         columnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-//        columnID1.setCellValueFactory(new PropertyValueFactory<>("id2"));
-//        columnFirstName1.setCellValueFactory(new PropertyValueFactory<>("prenume"));//numele din domeniu al atributului
-//        columnLastName1.setCellValueFactory(new PropertyValueFactory<>("nume"));
-//        columnFriendsFrom.setCellValueFactory(new PropertyValueFactory<>("friendsFrom"));
         utilizatorTableView.setItems(model);
 //        prieteniTableView.setItems(modelPrieteni);
         utilizatorTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
@@ -88,7 +78,6 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
 //                prieteniTableView.setVisible(false);
                 utilizatorTableView.setPrefHeight(hBoxTables.getHeight());
                 utilizatorTableView.setPrefWidth(hBoxTables.getWidth());
-//                reloadColumns();
             }
             else {
 //                prieteniTableView.setVisible(true);
@@ -100,14 +89,10 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
                 reloadFriendsModel(utilizator.getId());
             }
         }));
-//        prieteniTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
-//            var prietenie = prieteniTableView.getSelectionModel().getSelectedItem();
-//            if(prietenie == null){
-//                buttonDeletePrietenie.setVisible(false);
-//                return;
-//            }
-//            buttonDeletePrietenie.setVisible(true);
-//        }));
+        choiceNumberOfUserPerPage.setItems(numberOfElements);
+        currentPage = 0;
+        numberOfRecordsPerPage = 5;
+        choiceNumberOfUserPerPage.setValue(5);
     }
 
     public void handleAddUtilizator(ActionEvent actionEvent){
@@ -189,15 +174,18 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     }
 
     private void initModel(){
-        Iterable<Utilizator> listaUsers = serviceSocialNetwork.getAllUtilizatori();
-        List<Utilizator> utilizatorList = StreamSupport.stream(listaUsers.spliterator(), false).toList();
+        Page<Utilizator> utilizatoriOnCurrentPage = serviceSocialNetwork.getUtilizatoriOnPage(new Pageable(currentPage, numberOfRecordsPerPage));
+        totalNumberOfElements = utilizatoriOnCurrentPage.getTotalNumberOfElements();
+        List<Utilizator> utilizatorList = StreamSupport.stream(utilizatoriOnCurrentPage.getElementsOnPage().spliterator(), false).toList();
         model.setAll(utilizatorList);
         this.utilizatorTableView.getSelectionModel().clearSelection();
+        this.handlePageNavigationChecks();
     }
 
     public void setServiceSocialNetwork(Service serviceSocialNetwork) {
         this.serviceSocialNetwork = serviceSocialNetwork;
         serviceSocialNetwork.addObserver(this);
+        init_all();
         initModel();
     }
     public void clearSelectionMainTable(){
@@ -264,6 +252,27 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         catch (IOException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    private void handlePageNavigationChecks(){
+        previousButton.setDisable(currentPage == 0);
+        nextButton.setDisable((currentPage+1)*numberOfRecordsPerPage >= totalNumberOfElements);
+    }
+
+    public void prevPage(ActionEvent actionEvent) {
+        currentPage--;
+        initModel();
+    }
+
+    public void nextPage(ActionEvent actionEvent) {
+        currentPage++;
+        initModel();
+    }
+
+    public void changePagination(ActionEvent actionEvent) {
+        this.numberOfRecordsPerPage = choiceNumberOfUserPerPage.getValue();
+        this.currentPage = 0;
+        this.initModel();
     }
 
     //TODO Trebe sa fac link intre asta si noua fereastra care o sa se deschida

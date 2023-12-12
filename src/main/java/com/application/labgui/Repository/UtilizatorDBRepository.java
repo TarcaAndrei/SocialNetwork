@@ -1,16 +1,21 @@
 package com.application.labgui.Repository;
 
 import com.application.labgui.Domain.Utilizator;
+import com.application.labgui.Repository.Paging.Page;
+import com.application.labgui.Repository.Paging.Pageable;
+import com.application.labgui.Repository.Paging.PagingRepository;
 import com.application.labgui.Validators.FactoryValidator;
 import com.application.labgui.Validators.Validator;
 import com.application.labgui.Validators.ValidatorStrategies;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 
-public class UtilizatorDBRepository implements Repository<Long, Utilizator>{
+public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator> {
     private Validator utilizatorValidator;
     private DBConnection dbConnection;
 
@@ -158,5 +163,35 @@ public class UtilizatorDBRepository implements Repository<Long, Utilizator>{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Page<Utilizator> findAll(Pageable pageable) {
+        int numberOfElements = size();
+        int limit = pageable.getPageSize();
+        int offset = pageable.getPageSize() * pageable.getPageNumber();
+        if(offset > numberOfElements){
+            return new Page<>(new ArrayList<>(), numberOfElements);
+        }
+        List<Utilizator> utilizatorList = new ArrayList<>();
+        try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM utilizatori LIMIT ? OFFSET ?")
+        ) {
+            preparedStatement.setInt(1, limit);
+            preparedStatement.setInt(2, offset);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("iduser");
+                String firstName = resultSet.getString("firstname");
+                String lastName = resultSet.getString("lastname");
+                Utilizator utilizator = new Utilizator(firstName, lastName);
+                utilizator.setId(id);
+                utilizator = loadFriends(utilizator).get();
+                utilizatorList.add(utilizator);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return new Page<>(utilizatorList, numberOfElements);
     }
 }
