@@ -25,13 +25,13 @@
                   <Font size="8.0" />
                </font></Label>
             <Label fx:id="mesajReplyTextEu" alignment="CENTER_RIGHT" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-            <TextArea fx:id="textAreaEu" nodeOrientation="RIGHT_TO_LEFT" prefHeight="41.0" prefWidth="361.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <TextFlow fx:id="textAreaEu" nodeOrientation="RIGHT_TO_LEFT" prefHeight="41.0" prefWidth="361.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Label fx:id="dataTextEl" textFill="#00000066" GridPane.halignment="LEFT">
                <font>
                   <Font size="8.0" />
                </font></Label>
             <Label fx:id="mesajReplyTextEl" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
-            <TextArea fx:id="textAreaEl" editable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="300.0" GridPane.rowIndex="2" />
+            <TextFlow fx:id="textAreaEl"  nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="300.0" GridPane.rowIndex="2" />
             <Button fx:id="replyButton" mnemonicParsing="false" onAction="#handlerReply" GridPane.columnIndex="1" GridPane.rowIndex="2" >
                 <graphic>
                     <ImageView preserveRatio="true" fitWidth="10.0">

@@ -110,15 +110,18 @@ public class UserController implements Observer<ServiceChangeEvent> {
         numeCunoscut.setText(cunoscut.getFirstName() + " " + cunoscut.getLastName());
         this.acceptaCererea.setDisable(false);
         this.refuzaCererea.setDisable(false);
+        var lblNou = new Label("Nu poti trimite mesaj cat timpu nu esti prieten cu el!");
         var relatie = service.getRelatieBetween(utilizatorLogat.getId() , cunoscut.getId()).get();
         if(relatie.getId().getLeft().equals(utilizatorLogat.getId())){
             //astepti momentan
             this.baraButoane.setVisible(false);
             if(relatie.getStatus() == CererePrietenie.REFUSED){
                 this.numeCunoscut.setText("Cererea ta a fost refuzata");
+                lblNou.setText("Cererea ta a fost refuzata");
             }
             else{
                 this.numeCunoscut.setText("Cererea ta e in asteptare");
+                lblNou.setText("Cererea ta e in asteptare");
             }
         }
         else{
@@ -127,6 +130,7 @@ public class UserController implements Observer<ServiceChangeEvent> {
 //                this.acceptaCererea.setDisable(true);
                 this.refuzaCererea.setDisable(true);
                 this.numeCunoscut.setText("I-ai refuzat cererea lui " + cunoscut.getFirstName() + " " + cunoscut.getLastName());
+                lblNou.setText("I-ai refuzat cererea lui " + cunoscut.getFirstName() + " " + cunoscut.getLastName());
             }
             else{
 //                this.acceptaCererea.setText("Accepta cererea");
@@ -134,7 +138,7 @@ public class UserController implements Observer<ServiceChangeEvent> {
             }
         }
 //        this.baraButoane.setVisible(false);
-        var lblNou = new Label("Nu poti trimite mesaj cat timpu nu esti prieten cu el!");
+//        var lblNou = new Label("Nu poti trimite mesaj cat timpu nu esti prieten cu el!");
         this.scrollPane.setContent(lblNou);
     }
 

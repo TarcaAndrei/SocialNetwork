@@ -31,6 +31,17 @@
     -fx-font-style: italic; /* Textul de reply să fie italic */
 }
 
+#textAreaEl{
+    -fx-background-color: lightGreen; /* Culoarea fundalului pentru TextArea-uri */
+    -fx-background-radius: 10; /* Margini rotunde pentru TextArea-uri */
+    /*-fx-border-color: transparent; !* Ascunde bordura pentru TextArea-uri *!*/
+}
+#textAreaEu{
+    -fx-background-color: lightBlue; /* Culoarea fundalului pentru TextArea-uri */
+    -fx-background-radius: 10; /* Margini rotunde pentru TextArea-uri */
+    /*-fx-border-color: transparent; !* Ascunde bordura pentru TextArea-uri *!*/
+}
+
 /* Stiluri pentru TextArea-uri */
 .text-area {
     -fx-background-color: #BFD9E5; /* Culoarea fundalului pentru TextArea-uri */

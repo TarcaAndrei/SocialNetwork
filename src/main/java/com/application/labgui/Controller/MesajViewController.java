@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.time.format.DateTimeFormatter;
@@ -20,10 +22,10 @@ public class MesajViewController  {
 
     public Label dataTextEu;
     public Label mesajReplyTextEu;
-    public TextArea textAreaEu;
+    public TextFlow textAreaEu;
     public Label dataTextEl;
     public Label mesajReplyTextEl;
-    public TextArea textAreaEl;
+    public TextFlow textAreaEl;
     public Button replyButton;
     private Utilizator sender;
     private Mesaj mesaj;
@@ -42,7 +44,10 @@ public class MesajViewController  {
             //inseamna ca suntem la cel care a trimis mesajul, deci il afisam pe partea lui
             this.textAreaEl.setVisible(false);
             this.textAreaEu.setVisible(true);
-            this.textAreaEu.setText(this.mesaj.getMesajScris());
+//            this.textAreaEu.setText(this.mesaj.getMesajScris());
+            this.textAreaEu.getChildren().add(new Text(this.mesaj.getMesajScris()));
+            textAreaEl.setPrefHeight(Region.USE_COMPUTED_SIZE);
+            textAreaEu.setPrefHeight(Region.USE_COMPUTED_SIZE);
             this.dataTextEu.setText(mesaj.getData().format(DateTimeFormatter.ISO_DATE_TIME));
             if(mesaj.getReplyTo()==null){
                 mesajReplyTextEu.setVisible(false);
@@ -55,10 +60,11 @@ public class MesajViewController  {
             }
         }
         else{
-            this.textAreaEl.setEditable(false);
+//            this.textAreaEl.setEditable(false);
             this.textAreaEu.setVisible(false);
             this.textAreaEl.setVisible(true);
-            this.textAreaEl.setText(this.mesaj.getMesajScris());
+//            this.textAreaEl.setText(this.mesaj.getMesajScris());
+            this.textAreaEl.getChildren().add(new Text(mesaj.getMesajScris()));
             this.dataTextEl.setText(mesaj.getData().format(DateTimeFormatter.ISO_DATE_TIME));
             if(mesaj.getReplyTo()==null){
                 mesajReplyTextEl.setVisible(false);
