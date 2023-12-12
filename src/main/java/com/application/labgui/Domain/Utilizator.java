@@ -8,6 +8,42 @@ public class Utilizator extends Entitate<Long> {
     private String firstName;
     private String lastName;
 
+    private String userName;
+
+    private String password;
+
+    public Utilizator(String firstName, String lastName, String userName, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = password;
+        this.friends = new ArrayList<>();
+    }
+
+    public Utilizator(String firstName, String lastName, String userName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = null;
+        this.friends = new ArrayList<>();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     private List<Utilizator> friends;
 
     /**

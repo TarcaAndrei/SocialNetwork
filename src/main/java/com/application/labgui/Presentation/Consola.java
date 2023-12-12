@@ -65,9 +65,9 @@ public class Consola {
                     System.out.println("La revedere!");
                     return;
                 }
-                case 'a', 'A'-> {
-                    helperConsola = this::autopopulare;
-                }
+//                case 'a', 'A'-> {
+//                    helperConsola = this::autopopulare;
+//                }
                 default -> {
                     helperConsola = this::invalidOption;
                 }
@@ -110,15 +110,15 @@ public class Consola {
         result.forEach(System.out::println);
     }
 
-    private void autopopulare() {
-        serviceApp.addNewUser("Marinache", "Valentin");
-        serviceApp.addNewUser("Albu", "Sorin");
-        serviceApp.addNewUser("Valeriu ", "Sergiu");
-        serviceApp.addNewUser("Pop", "Madalina");
-        serviceApp.addNewUser("Slăboiu", "Bianca");
-        serviceApp.addNewUser("Tomulescu", "Petruța");
-        System.out.println("A fost autopopulat repository-ul cu niste utilizatori");
-    }
+//    private void autopopulare() {
+//        serviceApp.addNewUser("Marinache", "Valentin");
+//        serviceApp.addNewUser("Albu", "Sorin");
+//        serviceApp.addNewUser("Valeriu ", "Sergiu");
+//        serviceApp.addNewUser("Pop", "Madalina");
+//        serviceApp.addNewUser("Slăboiu", "Bianca");
+//        serviceApp.addNewUser("Tomulescu", "Petruța");
+//        System.out.println("A fost autopopulat repository-ul cu niste utilizatori");
+//    }
 
     private void ceaMaiSociabilaComunitate() {
         var nrComunitati = serviceApp.numarComunitati();
@@ -148,7 +148,7 @@ public class Consola {
         System.out.print(">>>");
         var prenume = scanner.nextLine();
         try{
-            serviceApp.addNewUser(nume, prenume);
+//            serviceApp.addNewUser(nume, prenume);
             System.out.println("Utilizator creat cu succes!");
         }
         catch (AppException e){

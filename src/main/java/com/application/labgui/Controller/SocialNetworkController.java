@@ -1,7 +1,6 @@
 package com.application.labgui.Controller;
 
 import com.application.labgui.AppExceptions.AppException;
-import com.application.labgui.Domain.Prietenie;
 import com.application.labgui.Domain.PrietenieDTO;
 import com.application.labgui.Domain.Tuplu;
 import com.application.labgui.Domain.Utilizator;
@@ -25,7 +24,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -35,6 +33,7 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     public Button previousButton;
     public Button nextButton;
     public ChoiceBox<Integer> choiceNumberOfUserPerPage;
+    public TableColumn<Utilizator, String> columnUsername;
     private Service serviceSocialNetwork;
 
     ObservableList<Integer> numberOfElements = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8);
@@ -62,6 +61,7 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
 
     @Override
     public void update(ServiceChangeEvent eventUpdate) {
+        this.currentPage = 0;
         initModel();
     }
 
@@ -70,6 +70,7 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         columnID.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));//numele din domeniu al atributului
         columnLastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        columnUsername.setCellValueFactory(new PropertyValueFactory<>("userName"));
         utilizatorTableView.setItems(model);
 //        prieteniTableView.setItems(modelPrieteni);
         utilizatorTableView.getSelectionModel().selectedItemProperty().addListener((observable -> {
@@ -144,27 +145,52 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
     }
 
     public void handleUpdateUtilizator(ActionEvent actionEvent){
-        Utilizator utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
-        if(utilizator == null){
-            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", "Nu ai selectat niciun student");
-            return;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("views/authuser_view.fxml"));
+            AnchorPane root = fxmlLoader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("AuthType Page");
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            AuthController userController = fxmlLoader.getController();
+            userController.initAuthController(serviceSocialNetwork, loginStage,this, AuthType.UPDATE);
+            loginStage.show();
         }
-        showUtilizatorEditDialog(utilizator);
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+//        showUtilizatorEditDialog(utilizator);
     }
 
     public void handleDeleteUtilizator(ActionEvent actionEvent){
-        Utilizator utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
-        if(utilizator == null){
-            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", "Nu ai selectat niciun student");
-            return;
-        }
         try {
-            serviceSocialNetwork.deleteUtilizator(utilizator.getId());
-            MessageAlert.showMessage(null, Alert.AlertType.CONFIRMATION, "", "");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("views/authuser_view.fxml"));
+            AnchorPane root = fxmlLoader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("AuthType Page");
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            AuthController userController = fxmlLoader.getController();
+            userController.initAuthController(serviceSocialNetwork, loginStage,this, AuthType.DELETE);
+            loginStage.show();
         }
-        catch (AppException appException){
-            MessageAlert.showMessage(null, Alert.AlertType.CONFIRMATION, "", appException.getMessage());
+        catch (IOException e){
+            System.out.println(e.getMessage());
         }
+//        Utilizator utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
+//        if(utilizator == null){
+//            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "Eroare", "Nu ai selectat niciun student");
+//            return;
+//        }
+//        try {
+//            serviceSocialNetwork.deleteUtilizator(utilizator.getId());
+//            MessageAlert.showMessage(null, Alert.AlertType.CONFIRMATION, "", "");
+//        }
+//        catch (AppException appException){
+//            MessageAlert.showMessage(null, Alert.AlertType.CONFIRMATION, "", appException.getMessage());
+//        }
     }
 
     private void reloadFriendsModel(Long idUser){
@@ -221,17 +247,42 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         }
         showPrieteniAddDialog(utilizator);
     }
+
     public void handleLoginUser(ActionEvent actionEvent) {
-        var utilizator = utilizatorTableView.getSelectionModel().getSelectedItem();
-        if(utilizator == null){
-            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "", "Nu ai selectat niciun utilizator");
-            return;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("views/authuser_view.fxml"));
+            AnchorPane root = fxmlLoader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("AuthType Page");
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            AuthController userController = fxmlLoader.getController();
+            userController.initAuthController(serviceSocialNetwork, loginStage,this, AuthType.LOGIN);
+            loginStage.show();
         }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public void authSuccesful(AuthType authType, Utilizator utilizator) {
+//        if(utilizator == null){
+//            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "", "Nu ai selectat niciun utilizator");
+//            return;
+//        }
         var gasit = listaUseriLogati.get(utilizator.getId());
         if(gasit != null){
-            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "", "Exista deja userul!");
+            MessageAlert.showMessage(null, Alert.AlertType.ERROR, "", "Userul e deja logat!");
             return;
         }
+        switch (authType){
+            case LOGIN -> loginSuccesful(utilizator);
+            case UPDATE -> showUtilizatorEditDialog(utilizator);
+            case DELETE -> serviceSocialNetwork.deleteUtilizator(utilizator.getId());
+        }
+    }
+
+    private void loginSuccesful(Utilizator utilizator){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("views/user_view.fxml"));
@@ -274,6 +325,7 @@ public class SocialNetworkController implements Observer<ServiceChangeEvent> {
         this.currentPage = 0;
         this.initModel();
     }
+
 
     //TODO Trebe sa fac link intre asta si noua fereastra care o sa se deschida
 }

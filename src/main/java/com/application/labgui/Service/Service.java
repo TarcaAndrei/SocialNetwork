@@ -1,5 +1,6 @@
 package com.application.labgui.Service;
 
+import com.application.labgui.AppExceptions.RepositoryException;
 import com.application.labgui.AppExceptions.ServiceException;
 import com.application.labgui.AppExceptions.ValidationException;
 import com.application.labgui.Domain.*;
@@ -59,6 +60,20 @@ public class Service implements Observable<ServiceChangeEvent> {
         this.validatorCererePrietenie = factory.createValidator(ValidatorStrategies.CEREREPRIETENIE);
     }
 
+    public Utilizator loginUser(String username, String password){
+        var userOpt = repositoryUtilizatori.findUserAuth(username);
+        if(userOpt.isEmpty()){
+            throw new ServiceException("Nu exista userul!");
+        }
+        var parolaDB = userOpt.get().getPassword();
+        var parola_Decriptata = parolaDB;
+        if(!parola_Decriptata.equals(password)){
+            throw new ServiceException("Parola gresita!");
+        }
+        return userOpt.get();
+        //decriptare parola
+    }
+
     public void sentNewMessage(Long idSender, List<Long> idDestinations, String textDeTrimis, LocalDateTime dataTrimiterii){
         Mesaj mesajNou = new Mesaj(idSender, idDestinations, textDeTrimis, dataTrimiterii);
         var response = repositoryMesaje.save(mesajNou);
@@ -109,15 +124,22 @@ public class Service implements Observable<ServiceChangeEvent> {
      * @throws ServiceException daca exista deja utilizatorul in repo
      * @throws ValidationException daca stringurile sunt vide
      */
-    public void addNewUser(String numeUtilizator, String prenumeUtilizator){
-        var utilizatorNou = new Utilizator(prenumeUtilizator, numeUtilizator);
+    public void addNewUser(String numeUtilizator, String prenumeUtilizator, String username, String parola){
+        var parolaCriptata = parola;
+        //TODO: de criptat parola
+        var utilizatorNou = new Utilizator(prenumeUtilizator, numeUtilizator, username, parolaCriptata);
 //        utilizatorNou.setId(getIdUtilizatorNou());
         validatorUtilizator.validate(utilizatorNou);
-        var response = repositoryUtilizatori.save(utilizatorNou);
-        if(response.isPresent()){
-            throw new ServiceException("Utilizator existent!");
+        try {
+            var response = repositoryUtilizatori.save(utilizatorNou);
+            if(response.isPresent()){
+                throw new ServiceException("Utilizator existent!");
+            }
+            this.notifyAllObservers(new ServiceChangeEvent());
         }
-        this.notifyAllObservers(new ServiceChangeEvent());
+        catch (RepositoryException e){
+            throw new ServiceException("Username folosit deja!!!");
+        }
     }
 
     /**
@@ -143,6 +165,7 @@ public class Service implements Observable<ServiceChangeEvent> {
         }
         var u1 = response.get();
         if(u1.getFriends().isEmpty()){
+            this.notifyAllObservers(new ServiceChangeEvent());
             return;
         }
         u1.getFriends().forEach(x->{
@@ -151,6 +174,8 @@ public class Service implements Observable<ServiceChangeEvent> {
             repositoryUtilizatori.update(x);
         });
         this.notifyAllObservers(new ServiceChangeEvent());
+
+        //TODO: UI IMPROVEMENTS: GEN acolo sa imi afiseze delete sau login sau culori prostii de genu...
     }
 
     /**
@@ -234,8 +259,8 @@ public class Service implements Observable<ServiceChangeEvent> {
     }
 
 
-    public void updateUser(Long idUtilizator, String numeNou, String prenumeNou){
-        var utilizatorNou = new Utilizator(prenumeNou, numeNou);
+    public void updateUser(Long idUtilizator, String numeNou, String prenumeNou, String username, String parola){
+        var utilizatorNou = new Utilizator(prenumeNou, numeNou, username, parola);
         utilizatorNou.setId(idUtilizator);
         validatorUtilizator.validate(utilizatorNou);
         var response = repositoryUtilizatori.update(utilizatorNou);

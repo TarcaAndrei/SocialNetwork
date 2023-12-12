@@ -13,9 +13,10 @@
                      <children>
                          <TableView fx:id="utilizatorTableView" HBox.hgrow="ALWAYS">
                              <columns>
-                                 <TableColumn fx:id="columnID" prefWidth="50.0" text="ID" />
-                                 <TableColumn fx:id="columnFirstName" minWidth="0.0" prefWidth="250.0" text="Prenume" />
-                                 <TableColumn fx:id="columnLastName" minWidth="0.0" prefWidth="300.0" text="Nume" />
+                                 <TableColumn fx:id="columnID" prefWidth="52.666656613349915" text="ID" />
+                              <TableColumn fx:id="columnUsername" prefWidth="98.33331298828125" text="Username" />
+                                 <TableColumn fx:id="columnFirstName" minWidth="0.0" prefWidth="218.33331298828125" text="Prenume" />
+                                 <TableColumn fx:id="columnLastName" minWidth="0.0" prefWidth="307.0" text="Nume" />
                              </columns>
                          </TableView>
                      </children>
@@ -24,8 +25,8 @@
                      <children>
                         <ButtonBar prefHeight="40.0" prefWidth="200.0">
                           <buttons>
-                            <Button fx:id="previousButton" onAction="#prevPage" minWidth="0.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="354.0" text="Previous" />
-                              <Button fx:id="nextButton" onAction="#nextPage" mnemonicParsing="false" prefHeight="25.0" text="Next" />
+                            <Button fx:id="previousButton" minWidth="0.0" mnemonicParsing="false" onAction="#prevPage" prefHeight="25.0" prefWidth="354.0" text="Previous" />
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextPage" prefHeight="25.0" text="Next" />
                           </buttons>
                         </ButtonBar>
                         <ButtonBar prefHeight="40.0" prefWidth="200.0">
@@ -36,7 +37,7 @@
                         </ButtonBar>
                         <ButtonBar prefHeight="110.0" prefWidth="309.0">
                           <buttons>
-                            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" prefHeight="25.0" prefWidth="287.0" style="-fx-background-color: lightblue;" text="Add" />
+                            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleAddUtilizator" prefHeight="25.0" prefWidth="287.0" style="-fx-background-color: lightblue;" text="Register" />
                               <Button mnemonicParsing="false" onAction="#handleUpdateUtilizator" style="-fx-background-color: lightgreen;" text="Update" />
                               <Button mnemonicParsing="false" onAction="#handleDeleteUtilizator" style="-fx-background-color: lightcoral;" text="Delete" />
                           </buttons>

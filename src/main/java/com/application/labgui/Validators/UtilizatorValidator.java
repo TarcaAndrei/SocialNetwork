@@ -13,6 +13,12 @@ public class UtilizatorValidator implements Validator<Utilizator>{
         if(entity.getLastName().isEmpty()){
             mesajEroare += "Nume invalid!\n";
         }
+        if(entity.getUserName()!= null && entity.getUserName().length() < 2){
+            mesajEroare += "Username Invalid!\n";
+        }
+        if(entity.getPassword()!= null && entity.getPassword().length() < 3){
+            mesajEroare += "Parola invalida!\n";
+        }
         if(!mesajEroare.isEmpty()){
             throw new ValidationException(mesajEroare);
         }

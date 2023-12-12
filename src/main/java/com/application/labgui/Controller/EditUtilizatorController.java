@@ -7,10 +7,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class EditUtilizatorController {
+    public TextField usernameTextField;
+    public PasswordField passwordField;
     @FXML
     TextField idTextField;
     @FXML
@@ -36,11 +39,14 @@ public class EditUtilizatorController {
         if(this.utilizator != null){
             loadFields(utilizator);
             this.saveButton.setText("Update");
+            this.usernameTextField.setEditable(false);
         }
         else{
             this.idTextField.setText("Will be generated");
             this.prenumeTextField.setPromptText("INTRODU PRENUME");
             this.numeTextField.setPromptText("INTRODU NUME");
+            this.usernameTextField.setPromptText("INTRODU USERNAME");
+            this.passwordField.setPromptText("INTRODU PAROLA");
         }
     }
 
@@ -48,6 +54,7 @@ public class EditUtilizatorController {
         this.idTextField.setText(utilizator.getId().toString());
         this.prenumeTextField.setText(utilizator.getFirstName());
         this.numeTextField.setText(utilizator.getLastName());
+        this.usernameTextField.setText(utilizator.getUserName());
     }
 
     public void handlerCancel(ActionEvent actionEvent) {
@@ -57,9 +64,11 @@ public class EditUtilizatorController {
     public void handlerSave(ActionEvent actionEvent) {
         String prenume = this.prenumeTextField.getText();
         String nume = this.numeTextField.getText();
+        String username = this.usernameTextField.getText();
+        String password = this.passwordField.getText();
         if(utilizator==null) {
             try {
-                this.service.addNewUser(nume, prenume);
+                this.service.addNewUser(nume, prenume, username, password);
                 MessageAlert.showMessage(dialogStage, Alert.AlertType.CONFIRMATION, "", "A mers!");
                 dialogStage.close();
             } catch (AppException e) {
@@ -69,7 +78,7 @@ public class EditUtilizatorController {
         //altfel inseamna ca e vorba de un update
         else{
             try{
-                this.service.updateUser(utilizator.getId(), nume, prenume);
+                this.service.updateUser(utilizator.getId(), nume, prenume, username, password);
                 MessageAlert.showMessage(dialogStage, Alert.AlertType.CONFIRMATION, "", "A mers!");
                 dialogStage.close();
             }catch (AppException e) {

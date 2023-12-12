@@ -1,5 +1,6 @@
 package com.application.labgui.Repository;
 
+import com.application.labgui.AppExceptions.RepositoryException;
 import com.application.labgui.Domain.Utilizator;
 import com.application.labgui.Repository.Paging.Page;
 import com.application.labgui.Repository.Paging.Pageable;
@@ -24,11 +25,34 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
         this.dbConnection = dbConnection;
     }
 
+    public Optional<Utilizator>findUserAuth(String username){
+        try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
+            PreparedStatement statement = connection.prepareStatement("select * from Utilizatori " +
+                    "where username = ?");
+
+        ) {
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()) {
+                String firstName = resultSet.getString("firstname");
+                String lastName = resultSet.getString("lastname");
+                String password = resultSet.getString("password");
+                Long id = resultSet.getLong("iduser");
+                Utilizator u = new Utilizator(firstName,lastName, username, password);
+                u.setId(id);
+                u = loadFriends(u).get();
+                return Optional.ofNullable(u);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
 
     @Override
     public Optional<Utilizator> findOne(Long longID) {
         try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
-            PreparedStatement statement = connection.prepareStatement("select * from Utilizatori " +
+            PreparedStatement statement = connection.prepareStatement("select iduser, firstname, lastname, username from Utilizatori " +
                     "where idUser = ?");
 
         ) {
@@ -37,7 +61,8 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
             if(resultSet.next()) {
                 String firstName = resultSet.getString("firstname");
                 String lastName = resultSet.getString("lastname");
-                Utilizator u = new Utilizator(firstName,lastName);
+                String username = resultSet.getString("username");
+                Utilizator u = new Utilizator(firstName,lastName, username);
                 u.setId(longID);
                 u = loadFriends(u).get();
                 return Optional.ofNullable(u);
@@ -52,13 +77,14 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
     public Iterable<Utilizator> findAll() {
         HashMap<Long, Utilizator> entities = new HashMap<>();
         try (Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD)) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Utilizatori");
+            PreparedStatement statement = connection.prepareStatement("SELECT iduser, firstname, lastname, username FROM Utilizatori");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Long id = resultSet.getLong("iduser");
                 String firstName = resultSet.getString("firstname");
                 String lastName = resultSet.getString("lastname");
-                Utilizator utilizator = new Utilizator(firstName, lastName);
+                String username = resultSet.getString("username");
+                Utilizator utilizator = new Utilizator(firstName, username);
                 utilizator.setId(id);
                 utilizator = loadFriends(utilizator).get();
                 entities.put(id, utilizator);
@@ -73,13 +99,15 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
     public Optional<Utilizator> save(Utilizator entity) {
         utilizatorValidator.validate(entity);
         try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Utilizatori(firstname, lastname) VALUES(?, ?);")){
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Utilizatori(firstname, lastname, username, password) VALUES(?, ?, ?, ?);")){
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
+            preparedStatement.setString(3, entity.getUserName());
+            preparedStatement.setString(4, entity.getPassword());
             var responseSQL =preparedStatement.executeUpdate();
             return responseSQL==0 ? Optional.of(entity) : Optional.empty();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RepositoryException(e);
         }
     }
 
@@ -100,7 +128,7 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
     }
 
     private Optional<Utilizator> loadFriends(Utilizator utilizator){
-        String sqlStatement = "SELECT U.* FROM Utilizatori U, Prietenii P\n" +
+        String sqlStatement = "SELECT U.iduser, U.firstname, U.lastname FROM Utilizatori U, Prietenii P\n" +
                 "WHERE (P.iduser1 = ? AND P.iduser2 = u.IDUser) OR (P.iduser2 = ? AND P.iduser1 = u.IDUser);";
         try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)
@@ -127,11 +155,13 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
     public Optional<Utilizator> update(Utilizator entity) {
         utilizatorValidator.validate(entity);
         try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Utilizatori SET firstname = ?, lastname=? WHERE idUser = ?")
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Utilizatori SET firstname = ?, lastname=?, username=?, password=? WHERE idUser = ?")
         ){
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
-            preparedStatement.setLong(3 ,entity.getId());
+            preparedStatement.setString(3, entity.getUserName());
+            preparedStatement.setString(4, entity.getPassword());
+            preparedStatement.setLong(5 ,entity.getId());
             var response = preparedStatement.executeUpdate();
             return response==0 ? Optional.of(entity) : Optional.empty();
         } catch (SQLException e) {
@@ -175,7 +205,7 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
         }
         List<Utilizator> utilizatorList = new ArrayList<>();
         try(Connection connection = DriverManager.getConnection(dbConnection.DB_URL, dbConnection.DB_USER, dbConnection.DB_PASSWD);
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM utilizatori LIMIT ? OFFSET ?")
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT iduser, firstname, lastname, username FROM utilizatori LIMIT ? OFFSET ?")
         ) {
             preparedStatement.setInt(1, limit);
             preparedStatement.setInt(2, offset);
@@ -184,7 +214,8 @@ public class UtilizatorDBRepository implements PagingRepository<Long, Utilizator
                 Long id = resultSet.getLong("iduser");
                 String firstName = resultSet.getString("firstname");
                 String lastName = resultSet.getString("lastname");
-                Utilizator utilizator = new Utilizator(firstName, lastName);
+                String username = resultSet.getString("username");
+                Utilizator utilizator = new Utilizator(firstName, lastName, username);
                 utilizator.setId(id);
                 utilizator = loadFriends(utilizator).get();
                 utilizatorList.add(utilizator);
