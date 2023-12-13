@@ -32,6 +32,8 @@ public class AuthController {
         }
         catch (AppException e){
             MessageAlert.showMessage(null, Alert.AlertType.ERROR, "EROARE", e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

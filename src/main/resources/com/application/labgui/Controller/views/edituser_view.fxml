@@ -29,7 +29,7 @@
             <TextField fx:id="usernameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="numeTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handlerSave" text="Save" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handlerSave" text="Register" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handlerCancel" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="5" />
          </children>
       </GridPane>

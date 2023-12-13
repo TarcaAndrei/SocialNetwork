@@ -17,7 +17,7 @@ Button {
     -fx-padding: 5;
 }
 
-#saveButton {
+#loginButton {
     -fx-background-color: #4CAF50; /* Green */
     -fx-text-fill: white;
 }
@@ -26,3 +26,4 @@ Button {
     -fx-background-color: #f44336; /* Red */
     -fx-text-fill: white;
 }
+

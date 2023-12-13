@@ -18,6 +18,8 @@ import com.application.labgui.Validators.FactoryValidator;
 import com.application.labgui.Validators.Validator;
 import com.application.labgui.Validators.ValidatorStrategies;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
@@ -60,13 +62,29 @@ public class Service implements Observable<ServiceChangeEvent> {
         this.validatorCererePrietenie = factory.createValidator(ValidatorStrategies.CEREREPRIETENIE);
     }
 
-    public Utilizator loginUser(String username, String password){
+    private String encrypt(String strToEncrypt, String secret) throws Exception {
+        SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] encryptedBytes = cipher.doFinal(strToEncrypt.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedBytes);
+    }
+
+    private String decrypt(String strToDecrypt, String secret) throws Exception {
+        SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(strToDecrypt));
+        return new String(decryptedBytes);
+    }
+
+    public Utilizator loginUser(String username, String password) throws Exception {
         var userOpt = repositoryUtilizatori.findUserAuth(username);
         if(userOpt.isEmpty()){
             throw new ServiceException("Nu exista userul!");
         }
         var parolaDB = userOpt.get().getPassword();
-        var parola_Decriptata = parolaDB;
+        var parola_Decriptata = decrypt(parolaDB, System.getenv("SECRETKEY"));
         if(!parola_Decriptata.equals(password)){
             throw new ServiceException("Parola gresita!");
         }
@@ -124,8 +142,8 @@ public class Service implements Observable<ServiceChangeEvent> {
      * @throws ServiceException daca exista deja utilizatorul in repo
      * @throws ValidationException daca stringurile sunt vide
      */
-    public void addNewUser(String numeUtilizator, String prenumeUtilizator, String username, String parola){
-        var parolaCriptata = parola;
+    public void addNewUser(String numeUtilizator, String prenumeUtilizator, String username, String parola) throws Exception {
+        var parolaCriptata = encrypt(parola, System.getenv("SECRETKEY"));
         //TODO: de criptat parola
         var utilizatorNou = new Utilizator(prenumeUtilizator, numeUtilizator, username, parolaCriptata);
 //        utilizatorNou.setId(getIdUtilizatorNou());

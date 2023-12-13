@@ -14,17 +14,16 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
 <!--                <Label text="ID Utilizator" GridPane.halignment="CENTER" />-->
-                <Label text="USERNAME" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <Label text="PAROLA" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                <Label text="USERNAME" GridPane.halignment="CENTER" />
+                <Label text="PAROLA" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
 <!--                <TextField fx:id="idTextField" GridPane.columnIndex="1" />-->
-                <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handlerLogin" text="Login" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-                <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handlerCancel" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
-            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField fx:id="usernameField" GridPane.columnIndex="1" />
+                <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handlerLogin" text="Login" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handlerCancel" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
         </GridPane>
     </children>

@@ -44,7 +44,7 @@
                         </ButtonBar>
                         <ButtonBar prefHeight="110.0" prefWidth="291.0">
                           <buttons>
-                              <Button fx:id="loginUser" mnemonicParsing="false" onAction="#handleLoginUser" prefHeight="25.0" prefWidth="574.0" style="-fx-background-color: lightblue;" text="Login as User" />
+                              <Button fx:id="loginUser" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleLoginUser" prefHeight="25.0" prefWidth="314.0" style="-fx-background-color: lightblue;" text="Login as User" textAlignment="CENTER" />
                           </buttons>
                         </ButtonBar>
                      </children>

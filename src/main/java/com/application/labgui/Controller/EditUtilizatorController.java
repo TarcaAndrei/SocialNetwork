@@ -73,6 +73,8 @@ public class EditUtilizatorController {
                 dialogStage.close();
             } catch (AppException e) {
                 MessageAlert.showMessage(dialogStage, Alert.AlertType.ERROR, "EROARE", e.getMessage());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
         //altfel inseamna ca e vorba de un update
